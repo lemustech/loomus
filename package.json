@@ -1,0 +1,23 @@
+{
+  "name": "loomus",
+  "version": "1.0.0",
+  "description": "Loomus - Grabador moderno de pantalla, cámara flotante y audio con efectos para macOS y Windows",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "node scripts/build-mac.js"
+  },
+  "keywords": [
+    "screen-recorder",
+    "camera-bubble",
+    "electron",
+    "macos",
+    "windows",
+    "loomus"
+  ],
+  "author": "Luis Lemus",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^45.0.0"
+  }
+}

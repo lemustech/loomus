@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loomus Studio</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Top App Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo" title="Loomus Maxima Studio">
+          <img src="assets/logo.svg" alt="Loomus Logo" class="brand-logo-img" />
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-row">
+            <span class="brand-title">LOOM<span class="chroma-text">US</span></span>
+            <span class="brand-pro-pill">MAXIMA</span>
+          </div>
+          <span class="brand-subtitle" data-i18n="appSubtitle">Studio de Grabación Lumos Maxima</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Language Selector -->
+        <div class="lang-selector">
+          <span class="lang-icon">🌐</span>
+          <select id="langSelect">
+            <option value="auto" data-i18n="langAuto">Auto (Sistema)</option>
+            <option value="es">Español</option>
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="he">עברית (Hebrew)</option>
+            <option value="pt">Português</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="ja">日本語</option>
+            <option value="ar">العربية (Arabic)</option>
+          </select>
+        </div>
+
+        <button class="btn-refresh" id="btnRefreshSources" title="Recargar fuentes">
+          <svg class="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Studio Body -->
+    <main class="studio-container" id="studioContainer">
+
+      <!-- Left Column: Source & Setup Configuration -->
+      <section class="setup-column">
+
+        <!-- Loom Signature Recording Mode Selector -->
+        <div class="recording-mode-selector">
+          <button type="button" class="mode-btn active" id="modeScreenCam" data-mode="screencam">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <circle cx="18" cy="18" r="4"/>
+            </svg>
+            <span>Pantalla + Cámara</span>
+          </button>
+          <button type="button" class="mode-btn" id="modeScreenOnly" data-mode="screen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span>Solo Pantalla</span>
+          </button>
+          <button type="button" class="mode-btn" id="modeCamOnly" data-mode="cam">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 7l-7 5 7 5V7z"/>
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            </svg>
+            <span>Solo Cámara</span>
+          </button>
+        </div>
+
+        <!-- 1. Source Picker Card -->
+        <div class="card source-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-badge">1</span>
+              <span data-i18n="sourceSectionTitle">¿Qué deseas grabar?</span>
+            </div>
+            <!-- Source Type Tabs -->
+            <div class="tabs-pill">
+              <button class="tab-btn active" id="tabScreens" data-i18n="tabScreens">Pantallas</button>
+              <button class="tab-btn" id="tabWindows" data-i18n="tabWindows">Ventanas</button>
+            </div>
+          </div>
+
+          <!-- Sources Grid -->
+          <div class="sources-grid" id="sourcesGrid">
+            <div class="sources-loading">
+              <div class="spinner-mini"></div>
+              <span data-i18n="loadingSources">Cargando fuentes disponibles...</span>
+            </div>
+          </div>
+
+          <!-- Selected Source Summary Banner -->
+          <div class="selected-source-bar" id="selectedSourceBar">
+            <span class="dot-active"></span>
+            <span class="selected-source-label" data-i18n="selectedSource">Seleccionado:</span>
+            <span class="selected-source-name" id="selectedSourceName">-</span>
+          </div>
+        </div>
+
+        <!-- 2. Devices & Inputs Card (Camera + Mic) -->
+        <div class="card inputs-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-badge">2</span>
+              <span data-i18n="devicesSectionTitle">Cámara, Micrófono y Burbuja</span>
+            </div>
+          </div>
+
+          <div class="devices-grid">
+
+            <!-- Camera Toggle & Options -->
+            <div class="device-box" id="cameraBox">
+              <div class="device-box-header">
+                <div class="device-info">
+                  <div class="device-icon camera-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M23 7l-7 5 7 5V7z" />
+                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 data-i18n="cameraTitle">Cámara en Círculo</h4>
+                    <p data-i18n="cameraDesc">Burbuja flotante redimensionable</p>
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="cameraToggle" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="device-options" id="cameraOptions">
+                <div class="input-group">
+                  <label data-i18n="cameraDeviceLabel">Dispositivo:</label>
+                  <select id="cameraSelect" class="form-select"></select>
+                </div>
+
+                <div class="bubble-custom-row">
+                  <div class="input-group">
+                    <label data-i18n="bubbleSizeLabel">Tamaño:</label>
+                    <div class="size-selector">
+                      <button class="size-pill" data-size="160">S (160)</button>
+                      <button class="size-pill active" data-size="220">M (220)</button>
+                      <button class="size-pill" data-size="300">L (300)</button>
+                    </div>
+                  </div>
+
+                  <div class="input-group">
+                    <label data-i18n="bubbleBorderLabel">Estilo:</label>
+                    <select id="bubbleBorderSelect" class="form-select">
+                      <option value="purple" data-i18n="borderPurple">Púrpura Neón</option>
+                      <option value="gold" data-i18n="borderGold">Oro Rosado</option>
+                      <option value="cyan" data-i18n="borderCyan">Cian Cyber</option>
+                      <option value="minimal" data-i18n="borderMinimal">Minimal Blanco</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mirror-row" style="flex-wrap: wrap; gap: 10px;">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="cameraMirrorToggle" checked>
+                    <span data-i18n="cameraMirrorLabel">Efecto espejo horizontal</span>
+                  </label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="chromaBorderToggle" checked>
+                    <span data-i18n="chromaBorderLabel">Borde animado multicolor</span>
+                  </label>
+                  <button class="btn-bubble-toggle" id="btnToggleFloatingBubble" data-i18n="btnShowBubble">Ver burbuja flotante</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Microphone Toggle & VU Meter -->
+            <div class="device-box" id="micBox">
+              <div class="device-box-header">
+                <div class="device-info">
+                  <div class="device-icon mic-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="8" y1="23" x2="16" y2="23" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 data-i18n="micTitle">Micrófono & Audio</h4>
+                    <p data-i18n="micDesc">Voz clara sincronizada</p>
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="micToggle" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="device-options" id="micOptions">
+                <div class="input-group">
+                  <label data-i18n="micDeviceLabel">Dispositivo:</label>
+                  <select id="micSelect" class="form-select"></select>
+                </div>
+
+                <!-- Real-time Audio Level VU Meter -->
+                <div class="vu-meter-container">
+                  <span class="vu-label" data-i18n="micLevelLabel">Nivel de voz:</span>
+                  <div class="vu-bar-wrapper">
+                    <div class="vu-bar" id="vuBar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Teleprompter Box -->
+            <div class="device-box" id="teleprompterBox">
+              <div class="device-box-header">
+                <div class="device-info">
+                  <div class="device-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 16px; display: flex; align-items: center; justify-content: center;">
+                    📜
+                  </div>
+                  <div>
+                    <h4 data-i18n="teleprompterTitle">Teleprompter Invisible</h4>
+                    <p data-i18n="teleprompterDesc">Visible para ti, oculto en el video grabado</p>
+                  </div>
+                </div>
+                <button type="button" class="btn-bubble-toggle" id="btnOpenTeleprompter" data-i18n="btnOpenTeleprompter">Abrir Teleprompter</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Live Monitor & Action Deck -->
+      <section class="action-column">
+
+        <!-- Live Composite Monitor Preview -->
+        <div class="card monitor-card">
+          <div class="monitor-header">
+            <span class="monitor-title" data-i18n="monitorTitle">Vista previa en tiempo real</span>
+            <span class="res-badge" id="resBadge">1080p 60fps</span>
+          </div>
+
+          <div class="canvas-viewport" id="canvasViewport">
+            <!-- Hidden elements for capture compositing -->
+            <video id="screenVideo" autoplay playsinline muted class="hidden-source"></video>
+            <video id="camVideo" autoplay playsinline muted class="hidden-source"></video>
+            
+            <!-- Compositor Canvas -->
+            <canvas id="compositorCanvas"></canvas>
+            
+            <!-- Live Drawing & Annotation Overlay Canvas -->
+            <canvas id="annotationCanvas" class="annotation-canvas"></canvas>
+
+            <!-- Placeholder if not ready -->
+            <div class="viewport-placeholder" id="viewportPlaceholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="placeholder-icon">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              <p data-i18n="selectSourcePrompt">Selecciona una pantalla o ventana para comenzar</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Master Trigger Box -->
+        <div class="card trigger-card">
+          <button class="btn-start-record" id="btnStartRecord">
+            <div class="btn-rec-icon">
+              <div class="rec-dot"></div>
+            </div>
+            <div class="btn-rec-text">
+              <span class="rec-title" data-i18n="btnStartRecording">Iniciar Grabación</span>
+              <span class="rec-sub" data-i18n="recCountdownHint">Cuenta atrás de 3s antes de grabar</span>
+            </div>
+          </button>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- FLOATING RECORDING CONTROL DOCK (Visible during active recording) -->
+    <div class="recording-dock hidden" id="recordingDock">
+      <div class="dock-status">
+        <div class="recording-pulse" id="dockPulse"></div>
+        <span class="dock-timer" id="dockTimer">00:00</span>
+      </div>
+
+      <div class="dock-actions">
+        <!-- Live In-Recording Annotation / Pen Tools (Loom Style) -->
+        <button class="dock-btn" id="dockPenBtn" title="Herramientas de Anotación y Dibujo en Vivo">
+          <span style="font-size: 15px;">✏️</span>
+          <span id="dockPenText">Anotar</span>
+        </button>
+
+        <!-- Pause / Resume Button -->
+        <button class="dock-btn" id="dockPauseBtn" title="Pausar / Reanudar">
+          <svg id="dockPauseIcon" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16" rx="1" />
+            <rect x="14" y="4" width="4" height="16" rx="1" />
+          </svg>
+          <span id="dockPauseText" data-i18n="btnPause">Pausar</span>
+        </button>
+
+        <!-- Teleprompter Shortcut in Dock -->
+        <button class="dock-btn" id="dockTeleprompterBtn" title="Abrir / Cerrar Teleprompter">
+          <span style="font-size: 14px;">📜</span>
+          <span data-i18n="dockTeleprompter">Guion</span>
+        </button>
+
+        <!-- Stop & Save Button -->
+        <button class="dock-btn dock-btn-stop" id="dockStopBtn" title="Finalizar grabación">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <rect x="5" y="5" width="14" height="14" rx="2" />
+          </svg>
+          <span data-i18n="btnStop">Finalizar</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- EXPANDABLE ANNOTATION TOOLBAR (LOOM STYLE LIVE INKING) -->
+    <div class="annotation-toolbar hidden" id="annotationToolbar">
+      <div class="annotation-tool-group">
+        <button type="button" class="tool-btn active" data-tool="pen" title="Lápiz libre continuo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" data-tool="vanishing" title="Tinta Efímera (se desvanece sola en 2.5s) ✨">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" data-tool="highlighter" title="Resaltador Translúcido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.375 2.625a3.875 3.875 0 0 0-5.48 0L3.125 12.395l-1.12 6.72 6.72-1.12 9.77-9.77a3.875 3.875 0 0 0 0-5.48z"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" data-tool="arrow" title="Flecha Inteligente">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" data-tool="rect" title="Marco de Enfoque Rectangular">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-btn" data-tool="spotlight" title="Cursor Spotlight / Linterna de Enfoque">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="annotation-divider"></div>
+
+      <!-- Color Palette -->
+      <div class="annotation-colors">
+        <button type="button" class="color-dot active" data-color="#00f0ff" style="background: #00f0ff;" title="Cian Neón"></button>
+        <button type="button" class="color-dot" data-color="#f43f5e" style="background: #f43f5e;" title="Fucsia Loom"></button>
+        <button type="button" class="color-dot" data-color="#fde047" style="background: #fde047;" title="Amarillo Fluorescente"></button>
+        <button type="button" class="color-dot" data-color="#22c55e" style="background: #22c55e;" title="Verde Lima"></button>
+        <button type="button" class="color-dot" data-color="#ffffff" style="background: #ffffff;" title="Blanco Puro"></button>
+      </div>
+
+      <div class="annotation-divider"></div>
+
+      <!-- Actions -->
+      <div class="annotation-actions">
+        <button type="button" class="tool-action-btn" id="btnUndoAnnotation" title="Deshacer último trazo (Cmd+Z)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7v6h6"/>
+            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+          </svg>
+        </button>
+        <button type="button" class="tool-action-btn" id="btnClearAnnotation" title="Limpiar todos los trazos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3-SECOND COUNTDOWN OVERLAY -->
+    <div class="countdown-overlay hidden" id="countdownOverlay">
+      <div class="countdown-content">
+        <div class="countdown-circle">
+          <svg viewBox="0 0 100 100" class="countdown-svg">
+            <circle cx="50" cy="50" r="45" class="circle-bg" />
+            <circle cx="50" cy="50" r="45" class="circle-progress" id="countdownCircle" />
+          </svg>
+          <div class="countdown-number" id="countdownNumber">3</div>
+        </div>
+        <p class="countdown-text" data-i18n="countdownPrep">¡Prepárate para grabar!</p>
+      </div>
+    </div>
+
+    <!-- POST-RECORDING STUDIO EDITOR & EXPORT MODAL (LOOM STYLE) -->
+    <div class="modal-backdrop hidden" id="reviewModal">
+      <div class="modal-card editor-modal-card">
+        <!-- Header -->
+        <div class="modal-header editor-header">
+          <div class="modal-title-group">
+            <div class="editor-brand-badge">
+              <img src="assets/logo.svg" alt="Loomus" class="editor-logo-icon" />
+              <span class="editor-pro-badge">MAXIMA</span>
+            </div>
+            <div class="editor-title-wrap">
+              <span class="editor-tag" data-i18n="editorBadge">Loomus Studio Editor</span>
+              <input type="text" id="editorVideoTitle" value="Loomus_Grabacion" class="editor-title-input" placeholder="Nombre de la grabación..." />
+            </div>
+          </div>
+          <div class="editor-header-meta">
+            <span class="editor-chip" id="videoDurationLabel">00:00</span>
+            <span class="editor-chip" id="videoSizeLabel">0 MB</span>
+            <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+          </div>
+        </div>
+
+        <!-- Editor Body (2 columns: Stage on left, Tool panel on right) -->
+        <div class="editor-workspace">
+          
+          <!-- Column 1: Interactive Canvas & Timeline Player -->
+          <div class="editor-stage-col">
+            <!-- Stage Viewport (with live CSS effects: background, padding, shadow, border radius) -->
+            <div class="editor-viewport" id="editorViewport">
+              <div class="editor-canvas" id="editorCanvas">
+                <div class="editor-video-frame" id="editorVideoFrame">
+                  <!-- macOS Window Titlebar Mockup (Active when window frame selected) -->
+                  <div class="macos-window-header hidden" id="macosWindowHeader">
+                    <div class="window-traffic-lights">
+                      <span class="tl-dot tl-red"></span>
+                      <span class="tl-dot tl-yellow"></span>
+                      <span class="tl-dot tl-green"></span>
+                    </div>
+                    <span class="window-title-text" id="windowTitleText">Loomus Studio Pro</span>
+                  </div>
+
+                  <!-- MacBook Camera Notch Mockup (Active when macbook frame selected) -->
+                  <div class="macbook-notch hidden" id="macbookNotch">
+                    <div class="notch-camera"></div>
+                  </div>
+
+                  <video id="reviewVideo" playsinline preload="auto"></video>
+                  
+                  <!-- Animated Intro Card Overlay -->
+                  <div class="editor-intro-card" id="editorIntroOverlay">
+                    <div class="intro-avatar" id="introAvatarIcon">🚀</div>
+                    <div class="intro-text-group">
+                      <h4 class="intro-title" id="introTitleDisplay">Demostración Rápida</h4>
+                      <p class="intro-subtitle" id="introSubtitleDisplay">Por Luis Lemus · Loomus</p>
+                    </div>
+                  </div>
+
+                  <!-- Loomus Watermark Badge (Apple-Style Frosted Pill) -->
+                  <div class="editor-watermark-pill hidden" id="editorWatermarkPill">
+                    <img src="assets/logo.svg" alt="Loomus" class="watermark-pill-icon" />
+                    <span class="watermark-pill-text">Loomus Studio</span>
+                  </div>
+
+                  <!-- Cursor Glow Highlight Indicator -->
+                  <div class="cursor-glow hidden" id="cursorGlowElement"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Player & Trimming Controls -->
+            <div class="editor-player-dock">
+              <!-- Play/Pause & Time -->
+              <div class="player-top-row">
+                <div class="player-left-controls">
+                  <button type="button" class="btn-play-pause" id="btnEditorPlayPause" title="Reproducir / Pausar (Espacio)">
+                    <svg class="play-icon" id="playIconSvg" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    <svg class="pause-icon hidden" id="pauseIconSvg" viewBox="0 0 24 24" fill="currentColor">
+                      <rect x="6" y="4" width="4" height="16" />
+                      <rect x="14" y="4" width="4" height="16" />
+                    </svg>
+                  </button>
+                  <div class="time-readout font-mono">
+                    <span id="editorCurrentTime">00:00.0</span> / <span id="editorTotalTime">00:00.0</span>
+                  </div>
+                </div>
+
+                <!-- Quick Trim Helpers -->
+                <div class="trim-readout-group">
+                  <button type="button" class="btn-trim-chip" id="btnSetTrimIn" title="Fijar cabezal actual como Inicio">📍 In: <span id="trimInLabel">00:00.0</span></button>
+                  <button type="button" class="btn-trim-chip" id="btnSetTrimOut" title="Fijar cabezal actual como Fin">📍 Out: <span id="trimOutLabel">00:00.0</span></button>
+                  <button type="button" class="btn-trim-reset" id="btnResetTrim" title="Restablecer recorte completo">↺ Reset</button>
+                </div>
+
+                <!-- Playback Speed -->
+                <div class="speed-selector-group">
+                  <span class="speed-label">Velocidad:</span>
+                  <select id="editorPlaybackSpeed" class="speed-select">
+                    <option value="0.75">0.75x</option>
+                    <option value="1" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2.0x</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Interactive Timeline Track with Trim Range & Handles -->
+              <div class="timeline-bar-wrapper" id="timelineBarWrapper">
+                <div class="timeline-track" id="timelineTrack">
+                  <!-- Highlighted Trim Segment -->
+                  <div class="timeline-trim-region" id="timelineTrimRegion"></div>
+                  <!-- Playhead -->
+                  <div class="timeline-playhead" id="timelinePlayhead"></div>
+                  <!-- Trim Handle Left (In) -->
+                  <div class="trim-handle trim-handle-start" id="trimHandleIn" title="Arrastrar para recortar inicio">
+                    <div class="handle-bar"></div>
+                  </div>
+                  <!-- Trim Handle Right (Out) -->
+                  <div class="trim-handle trim-handle-end" id="trimHandleOut" title="Arrastrar para recortar fin">
+                    <div class="handle-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Studio Tools & Effects Panel -->
+          <div class="editor-tools-col">
+            <!-- Tabs -->
+            <div class="editor-tabs-bar">
+              <button type="button" class="tab-pill-btn active" data-tab="canvas" data-i18n="tabCanvas">🎨 Fondo</button>
+              <button type="button" class="tab-pill-btn" data-tab="effects" data-i18n="tabEffects">✨ Efectos</button>
+              <button type="button" class="tab-pill-btn" data-tab="intro" data-i18n="tabIntro">🏷️ Intro</button>
+            </div>
+
+            <!-- Tab Content 1: Canvas & Background -->
+            <div class="editor-tab-pane active" id="tabPaneCanvas">
+              <!-- Background Swatches -->
+              <div class="control-section">
+                <label class="control-label" data-i18n="bgThemeLabel">Fondo del Lienzo (Apple & Loom)</label>
+                <div class="bg-swatches-grid">
+                  <button type="button" class="bg-swatch" data-bg="sequoia" title="Apple Sequoia Forest" style="background: linear-gradient(135deg, #064e3b 0%, #047857 35%, #059669 70%, #d97706 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="sonoma" title="Apple Sonoma Sunset" style="background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 40%, #c084fc 80%, #6366f1 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="keynote" title="Apple Keynote Iridescent" style="background: radial-gradient(at 0% 0%, #3b82f6 0px, transparent 55%), radial-gradient(at 100% 100%, #ec4899 0px, transparent 50%), #030712"></button>
+                  <button type="button" class="bg-swatch active" data-bg="sunset" title="Sunset Vibes" style="background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="cyber" title="Cyber Neon" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #9333ea 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="aurora" title="Emerald Aurora" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="rosegold" title="Rose Gold" style="background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #fda4af 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="obsidian" title="Obsidian Titanium" style="background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #09090b 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="mesh" title="Mesh Studio" style="background: radial-gradient(at 0% 0%, #7c3aed 0px, transparent 50%), radial-gradient(at 100% 100%, #db2777 0px, transparent 50%), #0f172a"></button>
+                  <button type="button" class="bg-swatch" data-bg="none" title="Sin Fondo (Transparente)" style="background: repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 50% / 12px 12px"></button>
+                </div>
+              </div>
+
+              <!-- Custom Wallpaper Upload -->
+              <div class="control-section custom-bg-section">
+                <input type="file" id="inputCustomBg" accept="image/*" class="hidden" />
+                <div class="custom-bg-actions">
+                  <button type="button" class="btn-custom-bg" id="btnUploadBg">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <span data-i18n="uploadBgBtn">Subir Fondo Propio</span>
+                  </button>
+                  <button type="button" class="btn-clear-bg hidden" id="btnClearBg" title="Quitar fondo">✕</button>
+                </div>
+              </div>
+
+              <!-- Padding Slider -->
+              <div class="control-section">
+                <div class="control-header-flex">
+                  <label class="control-label" data-i18n="paddingLabel">Margen / Padding</label>
+                  <span class="control-val font-mono" id="valPadding">32px</span>
+                </div>
+                <input type="range" id="inputPadding" min="0" max="64" value="32" step="4" class="studio-slider" />
+              </div>
+
+              <!-- Corner Radius Slider -->
+              <div class="control-section">
+                <div class="control-header-flex">
+                  <label class="control-label" data-i18n="radiusLabel">Bordes Redondeados</label>
+                  <span class="control-val font-mono" id="valRadius">18px</span>
+                </div>
+                <input type="range" id="inputRadius" min="0" max="36" value="18" step="2" class="studio-slider" />
+              </div>
+
+              <!-- Drop Shadow Elevation -->
+              <div class="control-section">
+                <label class="control-label" data-i18n="shadowLabel">Sombra & Elevación 3D</label>
+                <div class="chips-group" id="shadowChips">
+                  <button type="button" class="chip-option" data-shadow="none">Ninguna</button>
+                  <button type="button" class="chip-option" data-shadow="soft">Suave</button>
+                  <button type="button" class="chip-option active" data-shadow="floating">3D Flotante</button>
+                  <button type="button" class="chip-option" data-shadow="neon">Glow Neón</button>
+                </div>
+              </div>
+
+              <!-- Aspect Ratio -->
+              <div class="control-section">
+                <label class="control-label" data-i18n="ratioLabel">Formato de Exportación</label>
+                <div class="chips-group" id="ratioChips">
+                  <button type="button" class="chip-option active" data-ratio="auto">Auto</button>
+                  <button type="button" class="chip-option" data-ratio="16-9">16:9</button>
+                  <button type="button" class="chip-option" data-ratio="9-16">9:16 (Reels)</button>
+                  <button type="button" class="chip-option" data-ratio="1-1">1:1 (Post)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content 2: Effects & Zoom -->
+            <div class="editor-tab-pane" id="tabPaneEffects">
+              <!-- Apple Device Mockup Selector -->
+              <div class="control-section">
+                <label class="control-label" data-i18n="deviceFrameLabel">Marco Apple / Mockup</label>
+                <div class="chips-group" id="frameChips">
+                  <button type="button" class="chip-option active" data-frame="none" data-i18n="frameNose">Sin Marco</button>
+                  <button type="button" class="chip-option" data-frame="macbook" data-i18n="frameMacbook">MacBook Pro</button>
+                  <button type="button" class="chip-option" data-frame="window" data-i18n="frameWindow">Ventana macOS</button>
+                  <button type="button" class="chip-option" data-frame="glass" data-i18n="frameGlass">Vidrio Studio</button>
+                </div>
+              </div>
+
+              <!-- Apple 3D Perspective Tilt -->
+              <div class="control-section">
+                <label class="control-label" data-i18n="tiltLabel">Inclinación 3D (Keynote Style)</label>
+                <div class="chips-group" id="tiltChips">
+                  <button type="button" class="chip-option active" data-tilt="flat" data-i18n="tiltNone">Plano 0°</button>
+                  <button type="button" class="chip-option" data-tilt="tilt-left" data-i18n="tiltLeft">Giro Izq -6°</button>
+                  <button type="button" class="chip-option" data-tilt="tilt-right" data-i18n="tiltRight">Giro Der +6°</button>
+                  <button type="button" class="chip-option" data-tilt="isometric" data-i18n="tiltIso">Isométrico 3D</button>
+                </div>
+              </div>
+
+              <!-- Dynamic Central Zoom -->
+              <div class="control-section">
+                <div class="toggle-flex-row">
+                  <div>
+                    <h5 class="toggle-title" data-i18n="zoomTitle">Zoom Dinámico Central</h5>
+                    <p class="toggle-desc" data-i18n="zoomDesc">Enfoca suavemente el centro de la pantalla</p>
+                  </div>
+                  <label class="switch-toggle">
+                    <input type="checkbox" id="toggleZoom" />
+                    <span class="slider-round"></span>
+                  </label>
+                </div>
+                <div class="zoom-options-row hidden" id="zoomLevelRow">
+                  <span class="control-label">Nivel de Zoom:</span>
+                  <div class="chips-group" id="zoomLevelChips">
+                    <button type="button" class="chip-option active" data-zoom="1.1">1.1x</button>
+                    <button type="button" class="chip-option" data-zoom="1.2">1.2x</button>
+                    <button type="button" class="chip-option" data-zoom="1.35">1.35x</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cursor Highlight Glow -->
+              <div class="control-section">
+                <div class="toggle-flex-row">
+                  <div>
+                    <h5 class="toggle-title" data-i18n="glowTitle">Resaltador de Cursor</h5>
+                    <p class="toggle-desc" data-i18n="glowDesc">Halo brillante animado para guiar la vista</p>
+                  </div>
+                  <label class="switch-toggle">
+                    <input type="checkbox" id="toggleCursorGlow" />
+                    <span class="slider-round"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Color Filter Grading -->
+              <div class="control-section">
+                <label class="control-label" data-i18n="filterLabel">Graduación de Color</label>
+                <div class="chips-group" id="filterChips">
+                  <button type="button" class="chip-option active" data-filter="none">Natural</button>
+                  <button type="button" class="chip-option" data-filter="vivid">Apple Vívido</button>
+                  <button type="button" class="chip-option" data-filter="cinema">Cine Cálido</button>
+                  <button type="button" class="chip-option" data-filter="cool">Cyber Cool</button>
+                </div>
+              </div>
+
+              <!-- Loomus Watermark Toggle -->
+              <div class="control-section">
+                <div class="toggle-flex-row">
+                  <div>
+                    <h5 class="toggle-title" data-i18n="watermarkLabel">Marca de Agua Loomus Pro</h5>
+                    <p class="toggle-desc" data-i18n="watermarkDesc">Sello distintivo estilo Apple en la esquina</p>
+                  </div>
+                  <label class="switch-toggle">
+                    <input type="checkbox" id="toggleWatermark" checked />
+                    <span class="slider-round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Content 3: Intro Card (Loom Style) -->
+            <div class="editor-tab-pane" id="tabPaneIntro">
+              <div class="control-section">
+                <div class="toggle-flex-row">
+                  <div>
+                    <h5 class="toggle-title" data-i18n="introTitle">Placa de Intro Animada</h5>
+                    <p class="toggle-desc" data-i18n="introDesc">Aparece durante los primeros segundos</p>
+                  </div>
+                  <label class="switch-toggle">
+                    <input type="checkbox" id="toggleIntroCard" checked />
+                    <span class="slider-round"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div id="introCardConfig">
+                <div class="control-section">
+                  <label class="control-label" data-i18n="introDemoTitleLabel">Título de la Demostración</label>
+                  <input type="text" id="inputIntroTitle" value="Demostración Rápida" class="studio-input" placeholder="Título del video..." />
+                </div>
+
+                <div class="control-section">
+                  <label class="control-label" data-i18n="introDemoSubtitleLabel">Subtítulo o Autor</label>
+                  <input type="text" id="inputIntroSubtitle" value="Por Luis Lemus · Loomus" class="studio-input" placeholder="Tu nombre o empresa..." />
+                </div>
+
+                <div class="control-section">
+                  <label class="control-label" data-i18n="introAvatarLabel">Icono o Avatar</label>
+                  <div class="emoji-picker-row" id="emojiPickerRow">
+                    <button type="button" class="emoji-chip active" data-emoji="🚀">🚀</button>
+                    <button type="button" class="emoji-chip" data-emoji="🎙️">🎙️</button>
+                    <button type="button" class="emoji-chip" data-emoji="💻">💻</button>
+                    <button type="button" class="emoji-chip" data-emoji="✨">✨</button>
+                    <button type="button" class="emoji-chip" data-emoji="🎬">🎬</button>
+                    <button type="button" class="emoji-chip" data-emoji="💡">💡</button>
+                  </div>
+                </div>
+
+                <div class="control-section">
+                  <label class="control-label" data-i18n="introDurationLabel">Duración de la Placa</label>
+                  <div class="chips-group" id="introDurChips">
+                    <button type="button" class="chip-option" data-intro-dur="2">2s</button>
+                    <button type="button" class="chip-option active" data-intro-dur="3">3s</button>
+                    <button type="button" class="chip-option" data-intro-dur="4">4s</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Rendering Progress Overlay -->
+        <div class="export-progress-bar hidden" id="exportProgressBox">
+          <div class="progress-info">
+            <span class="progress-title" id="exportStatusText">✨ Procesando video con efectos y animaciones...</span>
+            <span class="progress-percent font-mono" id="exportPercentText">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="exportProgressFill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="modal-footer editor-footer">
+          <button type="button" class="btn-secondary" id="btnDiscardRecording" data-i18n="btnDiscard">Descartar Toma</button>
+          <div class="footer-right-actions">
+            <button type="button" class="btn-outline-studio" id="btnSaveRawVideo" title="Guardar sin efectos directo">
+              <span data-i18n="btnSaveRaw">Guardar Original</span>
+            </button>
+            <button type="button" class="btn-primary btn-export-magic" id="btnExportEditedVideo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="btn-icon-svg">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <span data-i18n="btnExportMagic">Exportar con Lumos Maxima</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Saved Confirmation Alert -->
+        <div class="saved-alert hidden" id="savedAlert">
+          <span id="savedAlertText">✓ Vídeo guardado con éxito</span>
+          <button class="btn-link" id="btnOpenInFolder" data-i18n="btnOpenFolder">Mostrar en carpeta</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

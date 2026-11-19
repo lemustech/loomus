@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loomus Bubble</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .bubble-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      padding: 0;
+      -webkit-app-region: drag;
+    }
+
+    .bubble-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 50% !important;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      cursor: grab;
+      clip-path: circle(50% at 50% 50%);
+      box-sizing: border-box;
+      border: 3px solid #a855f7;
+      transition: border-color 0.3s ease;
+    }
+
+    .bubble-frame:active {
+      cursor: grabbing;
+    }
+
+    .bubble-frame.chroma-active {
+      border-color: transparent !important;
+    }
+
+    /* Fine rotating chromatic rainbow border ring */
+    .chroma-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      padding: 3.5px;
+      background: conic-gradient(from 0deg, #f43f5e, #ec4899, #8b5cf6, #06b6d4, #10b981, #f59e0b, #f43f5e);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: rotateChroma 5s linear infinite;
+      pointer-events: none;
+      z-index: 5;
+      display: none;
+    }
+
+    .bubble-frame.chroma-active .chroma-ring {
+      display: block;
+    }
+
+    @keyframes rotateChroma {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* default mirrored */
+      transition: transform 0.2s ease;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    video.unmirrored {
+      transform: scaleX(1);
+    }
+
+    /* Floating quick controls on hover */
+    .controls-overlay {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(35px);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      padding: 4px 8px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-app-region: no-drag;
+      z-index: 10;
+    }
+
+    .bubble-container:hover .controls-overlay {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .btn-icon {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-icon:hover {
+      background: rgba(168, 85, 247, 0.8);
+      transform: scale(1.1);
+    }
+
+    .btn-icon:active {
+      transform: scale(0.95);
+    }
+
+    .btn-icon.active {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+    }
+
+    /* Loading placeholder */
+    .placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 11px;
+      gap: 6px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 2px solid rgba(168, 85, 247, 0.2);
+      border-top-color: #a855f7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bubble-container" id="container">
+    <div class="bubble-frame" id="frame">
+      <div class="chroma-ring" id="chromaRing"></div>
+      <video id="cameraVideo" autoplay playsinline muted></video>
+      <div id="placeholder" class="placeholder">
+        <div class="spinner"></div>
+        <span>Iniciando...</span>
+      </div>
+
+      <div class="controls-overlay">
+        <!-- Size buttons -->
+        <button class="btn-icon" id="btnSmall" title="Pequeño (160px)">S</button>
+        <button class="btn-icon" id="btnMedium" title="Mediano (220px)">M</button>
+        <button class="btn-icon" id="btnLarge" title="Grande (300px)">L</button>
+        <!-- Chroma Border toggle -->
+        <button class="btn-icon" id="btnChroma" title="Borde Animado Multicolor">🌈</button>
+        <!-- Mirror toggle -->
+        <button class="btn-icon" id="btnMirror" title="Efecto Espejo">⇄</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('cameraVideo');
+    const placeholder = document.getElementById('placeholder');
+    const frame = document.getElementById('frame');
+    const btnChroma = document.getElementById('btnChroma');
+    let currentStream = null;
+    let isMirrored = true;
+    let isChromaActive = true; // default enabled smooth animated border
+
+    async function initCamera(deviceId) {
+      if (currentStream) {
+        currentStream.getTracks().forEach(t => t.stop());
+      }
+
+      placeholder.style.display = 'flex';
+      const constraints = {
+        video: deviceId ? { deviceId: { exact: deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } } : { width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      };
+
+      try {
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = currentStream;
+        await video.play();
+        placeholder.style.display = 'none';
+      } catch (err) {
+        console.error('Error starting camera bubble:', err);
+        placeholder.innerHTML = '<span style="color:#f87171;font-size:10px;text-align:center;padding:8px">Sin cámara</span>';
+      }
+    }
+
+    // Default start
+    initCamera();
+
+    function setChromaBorder(enabled) {
+      isChromaActive = !!enabled;
+      if (isChromaActive) {
+        frame.classList.add('chroma-active');
+        btnChroma.classList.add('active');
+      } else {
+        frame.classList.remove('chroma-active');
+        btnChroma.classList.remove('active');
+      }
+    }
+
+    // Start with chroma active by default
+    setChromaBorder(true);
+
+    // Listen for options from main process
+    window.loomus?.onBubbleApplyOptions((options) => {
+      if (options.isMirrored !== undefined) {
+        isMirrored = options.isMirrored;
+        if (isMirrored) {
+          video.classList.remove('unmirrored');
+        } else {
+          video.classList.add('unmirrored');
+        }
+      }
+
+      if (options.chromaBorder !== undefined) {
+        setChromaBorder(options.chromaBorder);
+      }
+
+      if (options.borderStyle) {
+        if (options.borderStyle === 'gold') {
+          frame.style.borderColor = '#f59e0b';
+        } else if (options.borderStyle === 'cyan') {
+          frame.style.borderColor = '#06b6d4';
+        } else if (options.borderStyle === 'minimal') {
+          frame.style.borderColor = '#ffffff';
+        } else {
+          frame.style.borderColor = '#a855f7';
+        }
+      }
+
+      if (options.deviceId) {
+        initCamera(options.deviceId);
+      }
+    });
+
+    document.getElementById('btnSmall').onclick = () => {
+      window.loomus?.updateCameraBubble({ size: 160 });
+    };
+    document.getElementById('btnMedium').onclick = () => {
+      window.loomus?.updateCameraBubble({ size: 220 });
+    };
+    document.getElementById('btnLarge').onclick = () => {
+      window.loomus?.updateCameraBubble({ size: 300 });
+    };
+    document.getElementById('btnMirror').onclick = () => {
+      isMirrored = !isMirrored;
+      if (isMirrored) {
+        video.classList.remove('unmirrored');
+      } else {
+        video.classList.add('unmirrored');
+      }
+    };
+
+    btnChroma.onclick = () => {
+      setChromaBorder(!isChromaActive);
+    };
+
+    // Continuous smooth resize on scroll/wheel
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const currentSize = frame.offsetWidth || 220;
+      const delta = e.deltaY < 0 ? 15 : -15;
+      const newSize = Math.max(130, Math.min(480, currentSize + delta));
+      window.loomus?.updateCameraBubble({ size: newSize });
+    }, { passive: false });
+  </script>
+</body>
+</html>

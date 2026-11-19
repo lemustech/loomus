@@ -1,0 +1,16 @@
+# Dependencias y enlaces
+node_modules
+node_modules/
+node_modules.old
+node_modules.old/
+
+# Compilados y empaquetados de macOS
+dist/
+build/*.icns
+/tmp/
+
+# Archivos de sistema de macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
