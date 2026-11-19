@@ -269,12 +269,41 @@
       if (options.borderStyle) {
         if (options.borderStyle === 'gold') {
           frame.style.borderColor = '#f59e0b';
+        } else if (options.borderStyle === 'glass') {
+          frame.style.borderColor = 'rgba(56, 189, 248, 0.85)';
+        } else if (options.borderStyle === 'titanium') {
+          frame.style.borderColor = 'rgba(241, 245, 249, 0.9)';
         } else if (options.borderStyle === 'cyan') {
           frame.style.borderColor = '#06b6d4';
         } else if (options.borderStyle === 'minimal') {
           frame.style.borderColor = '#ffffff';
         } else {
           frame.style.borderColor = '#a855f7';
+        }
+      }
+
+      if (options.filter) {
+        if (options.filter === 'warm') {
+          video.style.filter = 'sepia(0.25) saturate(1.25) contrast(1.08)';
+        } else if (options.filter === 'cyber') {
+          video.style.filter = 'contrast(1.2) saturate(1.35) brightness(1.05)';
+        } else if (options.filter === 'noir') {
+          video.style.filter = 'grayscale(1) contrast(1.25)';
+        } else {
+          video.style.filter = 'none';
+        }
+      }
+
+      if (options.shape) {
+        if (options.shape === 'squircle') {
+          frame.style.borderRadius = '26%';
+          frame.style.clipPath = 'none';
+        } else if (options.shape === 'rect') {
+          frame.style.borderRadius = '18px';
+          frame.style.clipPath = 'none';
+        } else {
+          frame.style.borderRadius = '50%';
+          frame.style.clipPath = 'circle(50% at 50% 50%)';
         }
       }
 

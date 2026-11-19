@@ -62,20 +62,20 @@
 
         <!-- Loomus Multi-Mode Recording Selector -->
         <div class="recording-mode-selector">
-          <button type="button" class="mode-btn active" id="modeScreenCam" data-mode="screencam">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-              <circle cx="18" cy="18" r="4"/>
-            </svg>
-            <span>Pantalla + Cámara</span>
-          </button>
-          <button type="button" class="mode-btn" id="modeScreenOnly" data-mode="screen">
+          <button type="button" class="mode-btn active" id="modeScreenOnly" data-mode="screen">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
               <line x1="8" y1="21" x2="16" y2="21"/>
               <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
             <span>Solo Pantalla</span>
+          </button>
+          <button type="button" class="mode-btn" id="modeScreenCam" data-mode="screencam">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <circle cx="18" cy="18" r="4"/>
+            </svg>
+            <span>Pantalla + Cámara</span>
           </button>
           <button type="button" class="mode-btn" id="modeCamOnly" data-mode="cam">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -143,12 +143,12 @@
                   </div>
                 </div>
                 <label class="switch">
-                  <input type="checkbox" id="cameraToggle" checked>
+                  <input type="checkbox" id="cameraToggle">
                   <span class="slider"></span>
                 </label>
               </div>
 
-              <div class="device-options" id="cameraOptions">
+              <div class="device-options" id="cameraOptions" style="display: none;">
                 <div class="input-group">
                   <label data-i18n="cameraDeviceLabel">Dispositivo:</label>
                   <select id="cameraSelect" class="form-select"></select>
@@ -165,12 +165,34 @@
                   </div>
 
                   <div class="input-group">
-                    <label data-i18n="bubbleBorderLabel">Estilo:</label>
+                    <label>Forma:</label>
+                    <div class="size-selector" id="shapeSelector">
+                      <button type="button" class="size-pill active" data-shape="circle">Círculo</button>
+                      <button type="button" class="size-pill" data-shape="squircle">Squircle</button>
+                      <button type="button" class="size-pill" data-shape="rect">16:9</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bubble-custom-row">
+                  <div class="input-group">
+                    <label data-i18n="bubbleBorderLabel">Estilo de Borde:</label>
                     <select id="bubbleBorderSelect" class="form-select">
-                      <option value="purple" data-i18n="borderPurple">Púrpura Neón</option>
-                      <option value="gold" data-i18n="borderGold">Oro Rosado</option>
-                      <option value="cyan" data-i18n="borderCyan">Cian Cyber</option>
-                      <option value="minimal" data-i18n="borderMinimal">Minimal Blanco</option>
+                      <option value="chroma">🌈 Chroma Glow (Neón Activo)</option>
+                      <option value="glass">💎 Cyber Glassmorphism</option>
+                      <option value="gold">🌅 Sunset Gold (Metálico)</option>
+                      <option value="titanium">⚪ Apple Minimal Titanium</option>
+                      <option value="purple">🟣 Púrpura Loomus</option>
+                    </select>
+                  </div>
+
+                  <div class="input-group">
+                    <label>Filtro de Cámara:</label>
+                    <select id="cameraFilterSelect" class="form-select">
+                      <option value="none">Natural (Sin filtro)</option>
+                      <option value="warm">✨ Golden Warm (Estudio Cálido)</option>
+                      <option value="cyber">⚡ Cyber Contrast (Ultra Nítido)</option>
+                      <option value="noir">🎬 Noir Cinema (Blanco y Negro)</option>
                     </select>
                   </div>
                 </div>
@@ -182,7 +204,11 @@
                   </label>
                   <label class="checkbox-label">
                     <input type="checkbox" id="chromaBorderToggle" checked>
-                    <span data-i18n="chromaBorderLabel">Borde animado multicolor</span>
+                    <span data-i18n="chromaBorderLabel">Aura luminosa multicolor</span>
+                  </label>
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="clickRippleToggle" checked>
+                    <span>Ondas de clic en pantalla (Click Ripple)</span>
                   </label>
                   <button class="btn-bubble-toggle" id="btnToggleFloatingBubble" data-i18n="btnShowBubble">Ver burbuja flotante</button>
                 </div>

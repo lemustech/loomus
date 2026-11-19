@@ -1,6 +1,6 @@
 {
   "name": "loomus",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Loomus - Grabador moderno de pantalla, cámara flotante y audio con efectos para macOS y Windows",
   "main": "src/main/main.js",
   "scripts": {

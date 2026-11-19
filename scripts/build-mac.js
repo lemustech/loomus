@@ -106,8 +106,10 @@ async function buildMacApp() {
     `-replace CFBundleExecutable -string "${APP_NAME}"`,
     `-replace CFBundleIdentifier -string "${BUNDLE_ID}"`,
     `-replace CFBundleIconFile -string "icon.icns"`,
-    `-replace CFBundleShortVersionString -string "1.0.0"`,
-    `-replace CFBundleVersion -string "1.0.0"`,
+    `-replace CFBundleShortVersionString -string "1.1.0"`,
+    `-replace CFBundleVersion -string "1.1.0"`,
+    `-replace LSApplicationCategoryType -string "public.app-category.video"`,
+    `-replace NSHumanReadableCopyright -string "Copyright © 2026 Luis Lemus (@Llemus43). Todos los derechos reservados."`,
     `-replace NSCameraUsageDescription -string "Loomus requiere acceso a la cámara web para proyectar tu burbuja de video en las grabaciones."`,
     `-replace NSMicrophoneUsageDescription -string "Loomus requiere acceso al micrófono para capturar tu narración en alta fidelidad."`,
     `-replace NSScreenCaptureUsageDescription -string "Loomus requiere permiso de grabación de pantalla para capturar tu escritorio y ventanas activas."`,
@@ -136,17 +138,49 @@ async function buildMacApp() {
 
   run(`codesign --verify --deep --strict --verbose=1 "${STAGE_APP_PATH}"`, 'Verificando firma de código');
 
-  // 10. Generar DMG instalador
-  console.log('\n📦 Empaquetando instalador DMG...');
+  // 10. Generar DMG instalador con diseño personalizado
+  console.log('\n📦 Empaquetando instalador DMG con diseño de Loomus...');
   const dmgStageDir = path.join(TMP_STAGE_DIR, 'dmg-root');
   fs.mkdirSync(dmgStageDir, { recursive: true });
 
   run(`cp -R -p "${STAGE_APP_PATH}" "${dmgStageDir}/"`, 'Copiando app al staging del DMG');
   run(`ln -s /Applications "${dmgStageDir}/Applications"`, 'Generando acceso directo a /Applications');
 
+  // Fondo personalizado y volumen del DMG
+  const dmgBgPath = path.join(BUILD_DIR, 'dmg-background.png');
+  if (fs.existsSync(dmgBgPath)) {
+    const bgDir = path.join(dmgStageDir, '.background');
+    fs.mkdirSync(bgDir, { recursive: true });
+    fs.copyFileSync(dmgBgPath, path.join(bgDir, 'background.png'));
+    console.log('🎨 Fondo de instalación con diseño Loomus inyectado.');
+  }
+
+  // Ícono de volumen personalizado para el disco
+  if (fs.existsSync(icnsPath)) {
+    fs.copyFileSync(icnsPath, path.join(dmgStageDir, '.VolumeIcon.icns'));
+    try {
+      execSync(`/usr/bin/SetFile -a C "${dmgStageDir}"`);
+      console.log('📀 Ícono oficial asignado al volumen del DMG.');
+    } catch {
+      // Ignorar si SetFile no está disponible
+    }
+  }
+
+  // Archivo de instrucciones rápidas dentro del disco
+  const readmePath = path.join(dmgStageDir, 'Instalacion Rapida.txt');
+  fs.writeFileSync(
+    readmePath,
+    '🟣 Loomus Studio v1.1.0 para macOS (Apple Silicon)\n' +
+    '===================================================\n\n' +
+    '1. Arrastra el icono "Loomus Studio.app" hacia la carpeta "Applications" (a la derecha).\n' +
+    '2. ¡Listo! Ya puedes abrirla desde tu Launchpad o Spotlight.\n\n' +
+    'Autor: Luis Lemus (@Llemus43)\n' +
+    '100% Local-First • Cero Nube • Privacidad Total\n'
+  );
+
   run(
     `hdiutil create -volname "${APP_NAME}" -srcfolder "${dmgStageDir}" -ov -format UDZO "${STAGE_DMG_PATH}"`,
-    'Creando archivo DMG comprimido (UDZO)'
+    'Creando archivo DMG comprimido (UDZO) con diseño de Loomus'
   );
 
   // 11. Publicar resultados en dist/

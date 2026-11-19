@@ -850,10 +850,14 @@ const state = {
   screenStream: null,
   camStream: null,
   micStream: null,
-  isCameraActive: true,
+  isCameraActive: false, // Inicia apagada: la luz verde NUNCA se enciende sola al abrir la app
   isMicActive: true,
   bubbleSize: 220,
-  bubbleBorderStyle: 'purple',
+  bubbleShape: 'circle', // 'circle', 'squircle', 'rect'
+  bubbleBorderStyle: 'chroma', // 'chroma', 'glass', 'gold', 'titanium', 'purple'
+  cameraFilter: 'none', // 'none', 'warm', 'cyber', 'noir'
+  clickRipple: true,
+  clickRipples: [],
   chromaBorder: true,
   isMirrored: true,
   isFloatingBubbleVisible: false,
@@ -1439,24 +1443,36 @@ async function selectSource(source) {
       state.screenStream.getTracks().forEach((t) => t.stop());
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia({
+    const constraints = {
       audio: false,
       video: {
         mandatory: {
           chromeMediaSource: 'desktop',
           chromeMediaSourceId: source.id,
-          minWidth: 1280,
-          maxWidth: 1920,
-          minHeight: 720,
-          maxHeight: 1080,
           maxFrameRate: 60
         }
       }
-    });
+    };
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     state.screenStream = stream;
     screenVideo.srcObject = stream;
     await screenVideo.play();
+
+    // Sincronizar resolución nativa Retina / 4K con el lienzo de grabación
+    const track = stream.getVideoTracks()[0];
+    if (track) {
+      const settings = track.getSettings();
+      if (settings.width && settings.height) {
+        compositorCanvas.width = settings.width;
+        compositorCanvas.height = settings.height;
+        if (annotationCanvas) {
+          annotationCanvas.width = settings.width;
+          annotationCanvas.height = settings.height;
+        }
+      }
+    }
 
     viewportPlaceholder.classList.add('hidden');
     startCompositorLoop();
@@ -1600,7 +1616,11 @@ cameraToggle.onchange = (e) => {
   if (state.isCameraActive) {
     startCameraStream();
   } else {
-    if (state.camStream) state.camStream.getTracks().forEach((t) => t.stop());
+    if (state.camStream) {
+      state.camStream.getTracks().forEach((t) => t.stop());
+      state.camStream = null;
+    }
+    if (camVideo) camVideo.srcObject = null;
     window.loomus?.toggleCameraBubble(false);
     state.isFloatingBubbleVisible = false;
     updateBubbleButtonText();
@@ -1628,9 +1648,34 @@ bubbleBorderSelect.onchange = (e) => {
   window.loomus?.updateCameraBubble({ borderStyle: state.bubbleBorderStyle });
 };
 
-document.querySelectorAll('.size-pill').forEach((btn) => {
+const cameraFilterSelect = document.getElementById('cameraFilterSelect');
+if (cameraFilterSelect) {
+  cameraFilterSelect.onchange = (e) => {
+    state.cameraFilter = e.target.value;
+    window.loomus?.updateCameraBubble({ filter: state.cameraFilter });
+  };
+}
+
+const clickRippleToggle = document.getElementById('clickRippleToggle');
+if (clickRippleToggle) {
+  clickRippleToggle.onchange = (e) => {
+    state.clickRipple = e.target.checked;
+  };
+}
+
+// Shape selector
+document.querySelectorAll('#shapeSelector .size-pill').forEach((btn) => {
   btn.onclick = () => {
-    document.querySelectorAll('.size-pill').forEach((b) => b.classList.remove('active'));
+    document.querySelectorAll('#shapeSelector .size-pill').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.bubbleShape = btn.getAttribute('data-shape') || 'circle';
+    window.loomus?.updateCameraBubble({ shape: state.bubbleShape });
+  };
+});
+
+document.querySelectorAll('.size-selector:not(#shapeSelector) .size-pill').forEach((btn) => {
+  btn.onclick = () => {
+    document.querySelectorAll('.size-selector:not(#shapeSelector) .size-pill').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
     state.bubbleSize = parseInt(btn.getAttribute('data-size'), 10);
     window.loomus?.updateCameraBubble({ size: state.bubbleSize });
@@ -1725,6 +1770,30 @@ function startCompositorLoop() {
       drawCameraBubbleOnCanvas();
     }
 
+    // 2.5 Draw click ripple effects on screen
+    if (state.clickRipples && state.clickRipples.length > 0) {
+      const now = Date.now();
+      state.clickRipples = state.clickRipples.filter((r) => {
+        const elapsed = now - r.createdAt;
+        if (elapsed > 600) return false;
+        const progress = elapsed / 600;
+        const curR = r.radius + (r.maxRadius - r.radius) * progress;
+        const curAlpha = r.alpha * (1 - progress);
+
+        canvasCtx.save();
+        canvasCtx.beginPath();
+        canvasCtx.arc(r.x, r.y, curR, 0, Math.PI * 2);
+        canvasCtx.strokeStyle = r.color;
+        canvasCtx.lineWidth = 3 * (1 - progress * 0.4);
+        canvasCtx.globalAlpha = curAlpha;
+        canvasCtx.shadowColor = r.color;
+        canvasCtx.shadowBlur = 10;
+        canvasCtx.stroke();
+        canvasCtx.restore();
+        return true;
+      });
+    }
+
     // 3. Draw live Inking & Annotations directly into video recording!
     drawAnnotations(canvasCtx, compositorCanvas.width, compositorCanvas.height);
     if (annotationCtx) {
@@ -1736,6 +1805,22 @@ function startCompositorLoop() {
   }
 
   renderFrame();
+}
+
+function createBubblePath(ctx, cx, cy, r, shape) {
+  ctx.beginPath();
+  if (shape === 'squircle' && typeof ctx.roundRect === 'function') {
+    const w = r * 2;
+    const h = r * 2;
+    ctx.roundRect(cx - r, cy - r, w, h, r * 0.45);
+  } else if (shape === 'rect' && typeof ctx.roundRect === 'function') {
+    const w = r * 2.2;
+    const h = (w * 9) / 16;
+    ctx.roundRect(cx - w / 2, cy - h / 2, w, h, 20);
+  } else {
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  }
+  ctx.closePath();
 }
 
 function drawCameraBubbleOnCanvas() {
@@ -1758,17 +1843,25 @@ function drawCameraBubbleOnCanvas() {
   canvasCtx.shadowOffsetX = 0;
   canvasCtx.shadowOffsetY = 10;
 
-  // Clip path: circle
-  canvasCtx.beginPath();
-  canvasCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  canvasCtx.closePath();
+  // Clip path by shape (Circle, Squircle, Rect 16:9)
+  createBubblePath(canvasCtx, centerX, centerY, radius, state.bubbleShape);
   canvasCtx.clip();
 
-  // Draw video frame inside circle
+  // Draw video frame inside shape with Filter
   if (state.isMirrored) {
     canvasCtx.translate(centerX * 2, 0);
     canvasCtx.scale(-1, 1);
   }
+
+  let filterStr = 'none';
+  if (state.cameraFilter === 'warm') {
+    filterStr = 'sepia(0.25) saturate(1.25) contrast(1.08)';
+  } else if (state.cameraFilter === 'cyber') {
+    filterStr = 'contrast(1.2) saturate(1.35) brightness(1.05)';
+  } else if (state.cameraFilter === 'noir') {
+    filterStr = 'grayscale(1) contrast(1.25)';
+  }
+  canvasCtx.filter = filterStr;
 
   // Cover aspect ratio
   const vidW = camVideo.videoWidth || 1280;
@@ -1785,15 +1878,14 @@ function drawCameraBubbleOnCanvas() {
   const drawY = centerY - drawH / 2;
 
   canvasCtx.drawImage(camVideo, drawX, drawY, drawW, drawH);
+  canvasCtx.filter = 'none';
   canvasCtx.restore();
 
-  // Draw Border Ring
+  // Draw Border Ring according to shape & style
   canvasCtx.save();
-  canvasCtx.beginPath();
-  canvasCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  createBubblePath(canvasCtx, centerX, centerY, radius, state.bubbleShape);
 
-  if (state.chromaBorder) {
-    // Smooth animated rotating rainbow chroma border
+  if (state.bubbleBorderStyle === 'chroma' || state.chromaBorder) {
     const angle = (Date.now() / 25) % 360;
     try {
       const grad = canvasCtx.createConicGradient((angle * Math.PI) / 180, centerX, centerY);
@@ -1805,28 +1897,31 @@ function drawCameraBubbleOnCanvas() {
       grad.addColorStop(0.9, '#f59e0b');
       grad.addColorStop(1, '#f43f5e');
       canvasCtx.strokeStyle = grad;
-      canvasCtx.lineWidth = 3.5;
+      canvasCtx.lineWidth = 4;
     } catch {
       canvasCtx.strokeStyle = `hsl(${angle}, 85%, 65%)`;
-      canvasCtx.lineWidth = 3.5;
+      canvasCtx.lineWidth = 4;
     }
+  } else if (state.bubbleBorderStyle === 'glass') {
+    canvasCtx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+    canvasCtx.lineWidth = 4;
+    canvasCtx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+    canvasCtx.shadowBlur = 15;
   } else if (state.bubbleBorderStyle === 'gold') {
     const grad = canvasCtx.createLinearGradient(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
     grad.addColorStop(0, '#f59e0b');
     grad.addColorStop(0.5, '#fb7185');
     grad.addColorStop(1, '#ec4899');
     canvasCtx.strokeStyle = grad;
+    canvasCtx.lineWidth = 4;
+  } else if (state.bubbleBorderStyle === 'titanium') {
+    canvasCtx.strokeStyle = 'rgba(241, 245, 249, 0.9)';
     canvasCtx.lineWidth = 3.5;
-  } else if (state.bubbleBorderStyle === 'cyan') {
-    canvasCtx.strokeStyle = '#06b6d4';
-    canvasCtx.lineWidth = 3.5;
-  } else if (state.bubbleBorderStyle === 'minimal') {
-    canvasCtx.strokeStyle = '#ffffff';
-    canvasCtx.lineWidth = 3;
+    canvasCtx.shadowColor = 'rgba(255, 255, 255, 0.3)';
+    canvasCtx.shadowBlur = 12;
   } else {
-    // purple neon default
     canvasCtx.strokeStyle = '#a855f7';
-    canvasCtx.lineWidth = 3.5;
+    canvasCtx.lineWidth = 4;
   }
 
   canvasCtx.stroke();
@@ -1838,6 +1933,21 @@ let isDraggingBubble = false;
 let dragBubbleOffset = { x: 0, y: 0 };
 
 if (compositorCanvas) {
+  compositorCanvas.addEventListener('click', (e) => {
+    if (!state.clickRipple) return;
+    const rect = compositorCanvas.getBoundingClientRect();
+    const scaleX = compositorCanvas.width / rect.width;
+    const scaleY = compositorCanvas.height / rect.height;
+    state.clickRipples.push({
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+      radius: 4,
+      maxRadius: 38,
+      alpha: 0.9,
+      color: '#00f0ff',
+      createdAt: Date.now()
+    });
+  });
   compositorCanvas.addEventListener('mousedown', (e) => {
     if (!state.isCameraActive) return;
     const rect = compositorCanvas.getBoundingClientRect();
