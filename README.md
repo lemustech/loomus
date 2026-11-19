@@ -70,7 +70,7 @@ Loom revolucionó la comunicación asíncrona, pero impone dos grandes barreras:
 ## 📥 Instalación
 
 ### Opción 1: Descargar el Instalador Oficial (.dmg)
-1. Ve a la sección de [Releases](https://github.com/luislemus/loomus/releases) del repositorio.
+1. Ve a la sección de [Releases](https://github.com/lemustech/loomus/releases) del repositorio.
 2. Descarga **`Loomus Studio-arm64.dmg`**.
 3. Haz doble clic en el `.dmg` y arrastra **Loomus Studio** hacia tu carpeta **Applications**.
 4. ¡Listo! Ya puedes abrirla desde tu Launchpad o Spotlight.
@@ -90,7 +90,7 @@ Si deseas auditar el código o compilar el binario tú mismo:
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/luislemus/loomus.git
+git clone https://github.com/lemustech/loomus.git
 cd loomus
 ```
 
