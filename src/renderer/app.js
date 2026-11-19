@@ -50,7 +50,7 @@ const i18n = {
     recordingStatus: 'Grabando',
     pausedStatus: 'En pausa',
     editorBadge: 'Loomus Studio Editor',
-    bgThemeLabel: 'Fondo del Lienzo (Loom Style)',
+    bgThemeLabel: 'Fondo del Lienzo (Estilo Studio)',
     btnExportMagic: 'Exportar con Lumos Maxima',
     btnSaveRaw: 'Guardar Original',
     processingVideo: '✨ Procesando video con efectos y animaciones...',
@@ -135,7 +135,7 @@ const i18n = {
     recordingStatus: 'Recording',
     pausedStatus: 'Paused',
     editorBadge: 'Loomus Studio Editor',
-    bgThemeLabel: 'Canvas Background (Loom Style)',
+    bgThemeLabel: 'Canvas Background (Studio Style)',
     btnExportMagic: 'Export with Lumos Maxima',
     btnSaveRaw: 'Save Raw Original',
     processingVideo: '✨ Processing video with effects & animations...',
@@ -220,8 +220,8 @@ const i18n = {
     recordingStatus: 'रिकॉर्डिंग जारी है',
     pausedStatus: 'रोक दिया गया',
     editorBadge: 'Loomus स्टूडियो संपादक',
-    bgThemeLabel: 'कैनवास पृष्ठभूमि (Loom स्टाइल)',
-    btnExportMagic: 'Loom प्रभाव के साथ निर्यात करें',
+    bgThemeLabel: 'कैनवास पृष्ठभूमि (Studio स्टाइल)',
+    btnExportMagic: 'Studio प्रभाव के साथ निर्यात करें',
     btnSaveRaw: 'मूल वीडियो सहेजें',
     processingVideo: '✨ प्रभावों और एनिमेशन के साथ वीडियो प्रोसेस हो रहा है...',
     savedEditedSuccess: '✓ संपादित वीडियो सफलतापूर्वक निर्यात किया गया',
@@ -305,8 +305,8 @@ const i18n = {
     recordingStatus: 'מקליט כעת',
     pausedStatus: 'מושהה',
     editorBadge: 'עורך האולפן של Loomus',
-    bgThemeLabel: 'רקע קנבס (סגנון Loom)',
-    btnExportMagic: 'ייצא עם אפקטים של Loom',
+    bgThemeLabel: 'רקע קנבס (סגנון סטודיו)',
+    btnExportMagic: 'ייצא עם אפקטים של סטודיו',
     btnSaveRaw: 'שמור מקורי ללא עריכה',
     processingVideo: '✨ מעבד את הסרטון עם אפקטים והנפשות...',
     savedEditedSuccess: '✓ הסרטון הערוך יוצא בהצלחה',
@@ -390,8 +390,8 @@ const i18n = {
     recordingStatus: 'Gravando',
     pausedStatus: 'Pausado',
     editorBadge: 'Loomus Studio Editor',
-    bgThemeLabel: 'Fundo do Canvas (Estilo Loom)',
-    btnExportMagic: 'Exportar com Efeitos Loom',
+    bgThemeLabel: 'Fundo do Canvas (Estilo Studio)',
+    btnExportMagic: 'Exportar com Efeitos Studio',
     btnSaveRaw: 'Salvar Original Bruto',
     processingVideo: '✨ Processando vídeo com efeitos e animações...',
     savedEditedSuccess: '✓ Vídeo editado e exportado com sucesso',
@@ -475,8 +475,8 @@ const i18n = {
     recordingStatus: 'Enregistrement en cours',
     pausedStatus: 'En pause',
     editorBadge: 'Loomus Studio Editor',
-    bgThemeLabel: 'Arrière-plan Canvas (Style Loom)',
-    btnExportMagic: 'Exporter avec Effets Loom',
+    bgThemeLabel: 'Arrière-plan Canvas (Style Studio)',
+    btnExportMagic: 'Exporter avec Effets Studio',
     btnSaveRaw: 'Enregistrer Original Brut',
     processingVideo: '✨ Traitement de la vidéo avec effets et animations...',
     savedEditedSuccess: '✓ Vidéo éditée et exportée avec succès',
@@ -560,8 +560,8 @@ const i18n = {
     recordingStatus: 'Aufnahme läuft',
     pausedStatus: 'Pausiert',
     editorBadge: 'Loomus Studio Editor',
-    bgThemeLabel: 'Leinwand-Hintergrund (Loom-Stil)',
-    btnExportMagic: 'Mit Loom-Effekten exportieren',
+    bgThemeLabel: 'Leinwand-Hintergrund (Studio-Stil)',
+    btnExportMagic: 'Mit Studio-Effekten exportieren',
     btnSaveRaw: 'Originalvideo speichern',
     processingVideo: '✨ Video wird mit Effekten und Animationen verarbeitet...',
     savedEditedSuccess: '✓ Bearbeitetes Video erfolgreich exportiert',
@@ -645,8 +645,8 @@ const i18n = {
     recordingStatus: '録画中',
     pausedStatus: '一時停止中',
     editorBadge: 'Loomus スタジオエディタ',
-    bgThemeLabel: 'キャンバス背景 (Loomスタイル)',
-    btnExportMagic: 'Loomエフェクト付きで書き出し',
+    bgThemeLabel: 'キャンバス背景 (スタジオスタイル)',
+    btnExportMagic: 'Studioエフェクト付きで書き出し',
     btnSaveRaw: 'オリジナルをそのまま保存',
     processingVideo: '✨ エフェクトとアニメーションを合成処理中...',
     savedEditedSuccess: '✓ エフェクト付きビデオの書き出しが完了しました',
@@ -730,8 +730,8 @@ const i18n = {
     recordingStatus: 'جارٍ التسجيل',
     pausedStatus: 'متوقف مؤقتاً',
     editorBadge: 'محرر استوديو Loomus',
-    bgThemeLabel: 'خلفية اللوحة (نمط Loom)',
-    btnExportMagic: 'تصدير مع تأثيرات Loom',
+    bgThemeLabel: 'خلفية اللوحة (نمط الاستوديو)',
+    btnExportMagic: 'تصدير مع تأثيرات الاستوديو',
     btnSaveRaw: 'حفظ الفيديو الأصلي',
     processingVideo: '✨ معالجة الفيديو مع التأثيرات والرسوم المتحركة...',
     savedEditedSuccess: '✓ تم تصدير الفيديو المحرر بنجاح',
@@ -994,7 +994,7 @@ if (annotationCanvas) {
 }
 
 // ==========================================
-// LIVE INKING & ANNOTATION ENGINE (LOOM STYLE)
+// LIVE INKING & ANNOTATION ENGINE
 // ==========================================
 const inking = {
   active: false,
@@ -1297,7 +1297,7 @@ function drawAnnotations(ctx, width, height) {
     ctx.restore();
   }
 
-  // 4. Cursor Spotlight / Linterna de Enfoque (Loom Signature Feature)
+  // 4. Cursor Spotlight / Linterna de Enfoque (Loomus Signature Feature)
   if (inking.active && inking.tool === 'spotlight' && inking.isHovering) {
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
@@ -2049,7 +2049,7 @@ dockStopBtn.onclick = () => {
 };
 
 // ========================
-// 8. LOOMUS STUDIO VIDEO EDITOR & RENDERER (LOOM & SCREEN STUDIO STYLE)
+// 8. LOOMUS STUDIO VIDEO EDITOR & RENDERER
 // ========================
 
 const editorState = {
@@ -2689,7 +2689,7 @@ async function handleRecordingStopped() {
   };
 }
 
-// 8.3 Canvas Exporter Engine with Loom Effects (Hardware-Accelerated + Double-Buffered)
+// 8.3 Canvas Exporter Engine with Studio Effects (Hardware-Accelerated + Double-Buffered)
 async function exportEditedVideo() {
   if (!state.recordedBlob || editorState.isExporting) return;
   editorState.isExporting = true;

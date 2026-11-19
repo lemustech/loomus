@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <b>La alternativa de código abierto, moderna y 100% privada a Loom para macOS y Apple Silicon.</b><br>
+  <b>La suite de grabación de pantalla moderna, profesional y 100% privada para macOS y Apple Silicon.</b><br>
   Graba tu pantalla, tu cámara web en una burbuja flotante y dibuja en vivo con efectos neón — sin límites de tiempo y sin subir tus videos a la nube.
 </p>
 
@@ -19,15 +19,15 @@
 
 ---
 
-## ⚡ ¿Por qué Loomus? (Loomus vs Loom)
+## ⚡ ¿Por qué Loomus Studio?
 
-Loom revolucionó la comunicación asíncrona, pero impone dos grandes barreras: **cuesta \$12.50-\$15 USD mensuales por usuario** y **obliga a subir cada grabación a servidores en la nube**, lo que representa un riesgo crítico de privacidad para desarrolladores, abogados, médicos y empresas que manejan información confidencial.
+Las plataformas convencionales de grabación en la nube imponen dos grandes barreras: **costosas suscripciones mensuales por usuario** y **la obligación de subir cada video a servidores remotos**, lo que representa un riesgo crítico de privacidad para desarrolladores, abogados, médicos y empresas que manejan información confidencial.
 
-| Característica | 🟣 Loomus Studio | 🔴 Loom (Plan Free/Starter) |
+| Característica | 🟣 Loomus Studio | ☁️ Grabadores en la Nube Convencionales |
 | :--- | :--- | :--- |
-| **Precio** | **100% Gratis y Open Source** | $12.50 – $15.00 USD / mes |
+| **Precio** | **100% Gratis y Open Source** | $12.50 – $15.00 USD / mes por usuario |
 | **Privacidad de Video** | **100% Local-First** (El video nunca sale de tu Mac) | Subido y almacenado en servidores externos |
-| **Límite de tiempo** | **Ilimitado** | Limitado a 5 minutos en plan gratuito |
+| **Límite de tiempo** | **Ilimitado** | Limitado a 5 minutos en planes gratis |
 | **Anotaciones en Pantalla** | **6 herramientas neón integradas en vivo** | Solo en planes de pago |
 | **Teleprompter Integrado** | **Incluido** con modo invisible para el espectador | Requiere complementos de terceros |
 | **Auditoría de Código** | **Código abierto transparente (Cero spyware)** | Código cerrado propietario |
@@ -155,4 +155,4 @@ Las contribuciones son bienvenidas. Si tienes una idea para mejorar el motor de 
 
 Este proyecto está bajo la Licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-Autor: **Luis Lemus** ([@luislemus](https://github.com/luislemus))
+Autor: **Luis Lemus** ([@Llemus43](https://instagram.com/Llemus43))

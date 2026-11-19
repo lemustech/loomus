@@ -237,7 +237,7 @@ body.is-windows .app-header {
   gap: 20px;
 }
 
-/* LOOM SIGNATURE MODE SELECTOR */
+/* LOOMUS MULTI-MODE SELECTOR */
 .recording-mode-selector {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -986,7 +986,7 @@ input:checked + .slider:before {
   background: #dc2626;
 }
 
-/* EXPANDABLE ANNOTATION TOOLBAR (LOOM STYLE LIVE INKING) */
+/* EXPANDABLE ANNOTATION TOOLBAR (LOOMUS LIVE INKING) */
 .annotation-toolbar {
   position: fixed;
   bottom: 86px;
@@ -1362,7 +1362,7 @@ input:checked + .slider:before {
 }
 
 /* ============================================================ */
-/* LOOMUS STUDIO IN-APP VIDEO EDITOR (LOOM & SCREEN STUDIO STYLE) */
+/* LOOMUS STUDIO IN-APP VIDEO EDITOR */
 /* ============================================================ */
 
 .modal-card.editor-modal-card {
@@ -1731,7 +1731,7 @@ input:checked + .slider:before {
   display: block;
 }
 
-/* Animated Intro Card (Loom / Screen Studio Style) */
+/* Animated Intro Card (Loomus Studio Style) */
 .editor-intro-card {
   position: absolute;
   top: 14px;
