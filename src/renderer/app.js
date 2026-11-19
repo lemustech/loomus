@@ -3245,6 +3245,250 @@ async function exportEditedVideo() {
 }
 
 // ========================
+// 8.5 ONBOARDING & PERMISSIONS CONTROLLER
+// ========================
+function initOnboarding() {
+  const onboardingOverlay = document.getElementById('onboardingOverlay');
+  const btnReopenWelcome = document.getElementById('btnReopenWelcome');
+  if (!onboardingOverlay) return;
+
+  const step1 = document.getElementById('onboardingStep1');
+  const step2 = document.getElementById('onboardingStep2');
+  const step3 = document.getElementById('onboardingStep3');
+
+  const dot1 = document.getElementById('stepDot1');
+  const dot2 = document.getElementById('stepDot2');
+  const dot3 = document.getElementById('stepDot3');
+
+  const line1 = document.getElementById('stepLine1');
+  const line2 = document.getElementById('stepLine2');
+
+  const btnNextToStep2 = document.getElementById('btnNextToStep2');
+  const btnBackToStep1 = document.getElementById('btnBackToStep1');
+  const btnNextToStep3 = document.getElementById('btnNextToStep3');
+  const btnFinishOnboarding = document.getElementById('btnFinishOnboarding');
+
+  const btnReqScreen = document.getElementById('btnReqScreen');
+  const btnReqMic = document.getElementById('btnReqMic');
+  const btnReqCam = document.getElementById('btnReqCam');
+
+  const badgeScreen = document.getElementById('badgeScreen');
+  const badgeMic = document.getElementById('badgeMic');
+  const badgeCam = document.getElementById('badgeCam');
+
+  const permCardScreen = document.getElementById('permCardScreen');
+  const permCardMic = document.getElementById('permCardMic');
+  const permCardCam = document.getElementById('permCardCam');
+
+  function goToStep(stepNum) {
+    if (step1) step1.classList.remove('active');
+    if (step2) step2.classList.remove('active');
+    if (step3) step3.classList.remove('active');
+
+    if (dot1) dot1.className = 'step-dot';
+    if (dot2) dot2.className = 'step-dot';
+    if (dot3) dot3.className = 'step-dot';
+
+    if (line1) line1.className = 'step-line';
+    if (line2) line2.className = 'step-line';
+
+    if (stepNum === 1) {
+      if (step1) step1.classList.add('active');
+      if (dot1) dot1.classList.add('active');
+    } else if (stepNum === 2) {
+      if (step2) step2.classList.add('active');
+      if (dot1) dot1.classList.add('completed');
+      if (line1) line1.classList.add('active');
+      if (dot2) dot2.classList.add('active');
+      updatePermissionsStatus();
+    } else if (stepNum === 3) {
+      if (step3) step3.classList.add('active');
+      if (dot1) dot1.classList.add('completed');
+      if (line1) line1.classList.add('active');
+      if (dot2) dot2.classList.add('completed');
+      if (line2) line2.classList.add('active');
+      if (dot3) dot3.classList.add('active');
+    }
+  }
+
+  async function updatePermissionsStatus() {
+    try {
+      if (!window.loomus?.checkPermissions) return;
+      const status = await window.loomus.checkPermissions();
+
+      // Screen Recording
+      if (badgeScreen && btnReqScreen) {
+        if (status.screen === 'granted') {
+          badgeScreen.textContent = '✓ Concedido';
+          badgeScreen.className = 'perm-status-badge granted';
+          btnReqScreen.textContent = '✓ Listo';
+          btnReqScreen.classList.add('done');
+          if (permCardScreen) permCardScreen.classList.add('granted');
+        } else {
+          badgeScreen.textContent = 'Pendiente';
+          badgeScreen.className = 'perm-status-badge pending';
+          btnReqScreen.textContent = 'Activar';
+          btnReqScreen.classList.remove('done');
+          if (permCardScreen) permCardScreen.classList.remove('granted');
+        }
+      }
+
+      // Microphone
+      if (badgeMic && btnReqMic) {
+        if (status.microphone === 'granted') {
+          badgeMic.textContent = '✓ Concedido';
+          badgeMic.className = 'perm-status-badge granted';
+          btnReqMic.textContent = '✓ Listo';
+          btnReqMic.classList.add('done');
+          if (permCardMic) permCardMic.classList.add('granted');
+        } else {
+          badgeMic.textContent = 'Pendiente';
+          badgeMic.className = 'perm-status-badge pending';
+          btnReqMic.textContent = 'Activar';
+          btnReqMic.classList.remove('done');
+          if (permCardMic) permCardMic.classList.remove('granted');
+        }
+      }
+
+      // Camera
+      if (badgeCam && btnReqCam) {
+        if (status.camera === 'granted') {
+          badgeCam.textContent = '✓ Concedido';
+          badgeCam.className = 'perm-status-badge granted';
+          btnReqCam.textContent = '✓ Listo';
+          btnReqCam.classList.add('done');
+          if (permCardCam) permCardCam.classList.add('granted');
+        } else {
+          badgeCam.textContent = 'Opcional';
+          badgeCam.className = 'perm-status-badge pending';
+          btnReqCam.textContent = 'Activar';
+          btnReqCam.classList.remove('done');
+          if (permCardCam) permCardCam.classList.remove('granted');
+        }
+      }
+    } catch (err) {
+      console.warn('[Onboarding] Error checking permissions:', err);
+    }
+  }
+
+  // Action: Screen Permission
+  if (btnReqScreen) {
+    btnReqScreen.addEventListener('click', async () => {
+      try {
+        btnReqScreen.textContent = 'Abriendo...';
+        if (window.loomus?.requestPermission) {
+          const res = await window.loomus.requestPermission('screen');
+          if (res !== 'granted' && window.loomus?.openSettings) {
+            await window.loomus.openSettings('screen');
+          }
+        }
+      } catch {
+        if (window.loomus?.openSettings) {
+          await window.loomus.openSettings('screen');
+        }
+      }
+      setTimeout(updatePermissionsStatus, 1000);
+    });
+  }
+
+  // Action: Microphone Permission
+  if (btnReqMic) {
+    btnReqMic.addEventListener('click', async () => {
+      try {
+        btnReqMic.textContent = 'Pidiendo...';
+        if (window.loomus?.requestPermission) {
+          await window.loomus.requestPermission('microphone');
+        }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          stream.getTracks().forEach(t => t.stop());
+        } catch (_) {}
+        await enumerateDevices();
+      } catch (err) {
+        console.warn(err);
+        if (window.loomus?.openSettings) {
+          await window.loomus.openSettings('microphone');
+        }
+      }
+      setTimeout(updatePermissionsStatus, 800);
+    });
+  }
+
+  // Action: Camera Permission
+  if (btnReqCam) {
+    btnReqCam.addEventListener('click', async () => {
+      try {
+        btnReqCam.textContent = 'Pidiendo...';
+        if (window.loomus?.requestPermission) {
+          await window.loomus.requestPermission('camera');
+        }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          stream.getTracks().forEach(t => t.stop());
+        } catch (_) {}
+        await enumerateDevices();
+      } catch (err) {
+        console.warn(err);
+        if (window.loomus?.openSettings) {
+          await window.loomus.openSettings('camera');
+        }
+      }
+      setTimeout(updatePermissionsStatus, 800);
+    });
+  }
+
+  // Step transitions
+  if (btnNextToStep2) {
+    btnNextToStep2.addEventListener('click', () => goToStep(2));
+  }
+  if (btnBackToStep1) {
+    btnBackToStep1.addEventListener('click', () => goToStep(1));
+  }
+  if (btnNextToStep3) {
+    btnNextToStep3.addEventListener('click', () => goToStep(3));
+  }
+
+  // Finish onboarding
+  if (btnFinishOnboarding) {
+    btnFinishOnboarding.addEventListener('click', () => {
+      try {
+        localStorage.setItem('loomus_onboarding_completed', 'true');
+      } catch (_) {}
+      onboardingOverlay.classList.add('hidden');
+    });
+  }
+
+  // Re-open button from header
+  if (btnReopenWelcome) {
+    btnReopenWelcome.addEventListener('click', () => {
+      onboardingOverlay.classList.remove('hidden');
+      goToStep(1);
+    });
+  }
+
+  // Check state on load
+  try {
+    const isCompleted = localStorage.getItem('loomus_onboarding_completed');
+    if (isCompleted === 'true') {
+      onboardingOverlay.classList.add('hidden');
+    } else {
+      onboardingOverlay.classList.remove('hidden');
+      goToStep(1);
+    }
+  } catch (_) {
+    onboardingOverlay.classList.remove('hidden');
+    goToStep(1);
+  }
+
+  // Re-check permissions automatically whenever window regains focus (e.g. returning from macOS System Settings)
+  window.addEventListener('focus', () => {
+    if (step2 && step2.classList.contains('active')) {
+      updatePermissionsStatus();
+    }
+  });
+}
+
+// ========================
 // 9. INITIALIZATION
 // ========================
 window.addEventListener('DOMContentLoaded', async () => {
@@ -3259,4 +3503,5 @@ window.addEventListener('DOMContentLoaded', async () => {
   initEditorUI();
   initInkingControls();
   initModeSelector();
+  initOnboarding();
 });

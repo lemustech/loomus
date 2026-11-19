@@ -1,4 +1,4 @@
-const { app, BrowserWindow, desktopCapturer, dialog, ipcMain, shell, screen, session } = require('electron');
+const { app, BrowserWindow, desktopCapturer, dialog, ipcMain, shell, screen, session, systemPreferences } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -308,4 +308,43 @@ ipcMain.handle('window:close', () => {
 
 ipcMain.handle('window:always-on-top', (_event, flag) => {
   if (mainWindow) mainWindow.setAlwaysOnTop(!!flag);
+});
+
+// 8. macOS Permissions & Onboarding API
+ipcMain.handle('permissions:check', async () => {
+  if (process.platform !== 'darwin' || !systemPreferences.getMediaAccessStatus) {
+    return { microphone: 'granted', camera: 'granted', screen: 'granted' };
+  }
+  return {
+    microphone: systemPreferences.getMediaAccessStatus('microphone'),
+    camera: systemPreferences.getMediaAccessStatus('camera'),
+    screen: systemPreferences.getMediaAccessStatus('screen')
+  };
+});
+
+ipcMain.handle('permissions:request', async (_event, type) => {
+  if (process.platform !== 'darwin') return true;
+  try {
+    if (type === 'microphone' || type === 'camera') {
+      return await systemPreferences.askForMediaAccess(type);
+    }
+    if (type === 'screen') {
+      await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 1, height: 1 } });
+      return systemPreferences.getMediaAccessStatus('screen') === 'granted';
+    }
+  } catch (err) {
+    console.warn(`Error requesting ${type} permission:`, err);
+  }
+  return false;
+});
+
+ipcMain.handle('permissions:open-settings', async (_event, pane) => {
+  if (process.platform !== 'darwin') return;
+  const panes = {
+    screen: 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture',
+    microphone: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone',
+    camera: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Camera'
+  };
+  const target = panes[pane] || 'x-apple.systempreferences:com.apple.preference.security';
+  shell.openExternal(target);
 });

@@ -46,6 +46,10 @@
           </select>
         </div>
 
+        <button class="btn-onboarding-reopen" id="btnReopenWelcome" title="Ver Pantalla de Bienvenida y Permisos">
+          👋 Bienvenida
+        </button>
+
         <button class="btn-refresh" id="btnRefreshSources" title="Recargar fuentes">
           <svg class="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
@@ -830,6 +834,147 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- ONBOARDING & PERMISSIONS WELCOME MODAL -->
+  <div class="onboarding-overlay" id="onboardingOverlay">
+    <div class="onboarding-modal glass-card">
+
+      <!-- Step Indicator -->
+      <div class="onboarding-stepper">
+        <span class="step-dot active" id="stepDot1"></span>
+        <span class="step-line" id="stepLine1"></span>
+        <span class="step-dot" id="stepDot2"></span>
+        <span class="step-line" id="stepLine2"></span>
+        <span class="step-dot" id="stepDot3"></span>
+      </div>
+
+      <!-- STEP 1: Bienvenida & Agradecimiento -->
+      <div class="onboarding-step active" id="onboardingStep1">
+        <div class="onboarding-hero-icon">
+          <img src="assets/logo.svg" alt="Loomus Logo" class="onboarding-logo" />
+        </div>
+        <div class="badge-pill" style="margin: 0 auto 12px; display: inline-flex;">
+          <span class="badge-pulse"></span>
+          <span>¡Bienvenido a Loomus Studio!</span>
+        </div>
+        <h2 class="onboarding-title">Gracias por elegir Loomus</h2>
+        <p class="onboarding-desc">
+          Loomus Studio fue creado por <strong>Luis Lemus</strong> (<a href="https://instagram.com/Llemus43" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan); text-decoration: none;">@Llemus43</a>) para ofrecer una alternativa <strong>100% privada, sin suscripciones y sin nube</strong> para grabar tu pantalla y cámara en macOS.
+        </p>
+
+        <div class="onboarding-highlights">
+          <div class="highlight-item">
+            <span class="highlight-icon">🔒</span>
+            <div>
+              <strong>100% Local-First</strong>
+              <p>Tus videos se quedan en tu Mac. Cero subidas a la nube.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">⚡</span>
+            <div>
+              <strong>Apple Silicon Nativo</strong>
+              <p>Grabación fluida a 60 FPS con mínimo consumo de batería.</p>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <span class="highlight-icon">🖊️</span>
+            <div>
+              <strong>Dibujo y Teleprompter</strong>
+              <p>Herramientas de estudio profesionales integradas sin costo.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="onboarding-actions">
+          <button type="button" class="btn-onboarding-primary" id="btnNextToStep2">
+            <span>Configurar Permisos →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Concesión y Activación de Permisos -->
+      <div class="onboarding-step" id="onboardingStep2">
+        <div class="badge-pill" style="margin: 0 auto 10px; display: inline-flex;">
+          <span>🛡️ Privacidad y Seguridad</span>
+        </div>
+        <h2 class="onboarding-title">Activa los permisos de tu Mac</h2>
+        <p class="onboarding-desc">
+          macOS protege tu equipo exigiendo autorización explícita. Activa cada permiso con un clic para que Loomus funcione a la perfección:
+        </p>
+
+        <div class="permissions-checklist">
+          <!-- Permiso 1: Pantalla -->
+          <div class="perm-card" id="permCardScreen">
+            <div class="perm-icon-wrap">🖥️</div>
+            <div class="perm-info">
+              <div class="perm-title-row">
+                <h4>Grabación de Pantalla</h4>
+                <span class="perm-status-badge pending" id="badgeScreen">Pendiente</span>
+              </div>
+              <p>Requerido para capturar tu escritorio completo o ventanas de apps.</p>
+            </div>
+            <button type="button" class="btn-perm-action" id="btnReqScreen">Activar</button>
+          </div>
+
+          <!-- Permiso 2: Micrófono -->
+          <div class="perm-card" id="permCardMic">
+            <div class="perm-icon-wrap">🎙️</div>
+            <div class="perm-info">
+              <div class="perm-title-row">
+                <h4>Micrófono de Estudio</h4>
+                <span class="perm-status-badge pending" id="badgeMic">Pendiente</span>
+              </div>
+              <p>Captura tu narración y voz con sincronización exacta.</p>
+            </div>
+            <button type="button" class="btn-perm-action" id="btnReqMic">Activar</button>
+          </div>
+
+          <!-- Permiso 3: Cámara -->
+          <div class="perm-card" id="permCardCam">
+            <div class="perm-icon-wrap">📷</div>
+            <div class="perm-info">
+              <div class="perm-title-row">
+                <h4>Cámara Web (A demanda)</h4>
+                <span class="perm-status-badge pending" id="badgeCam">Opcional</span>
+              </div>
+              <p>Para proyectar tu burbuja flotante. Nunca se encenderá sola.</p>
+            </div>
+            <button type="button" class="btn-perm-action" id="btnReqCam">Activar</button>
+          </div>
+        </div>
+
+        <div class="onboarding-actions-split">
+          <button type="button" class="btn-onboarding-secondary" id="btnBackToStep1">← Volver</button>
+          <button type="button" class="btn-onboarding-primary" id="btnNextToStep3">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: ¡Listo para Grabar! -->
+      <div class="onboarding-step" id="onboardingStep3">
+        <div class="onboarding-hero-icon" style="margin-bottom: 14px;">
+          <div class="success-check-ring">✓</div>
+        </div>
+        <h2 class="onboarding-title">¡Todo listo para crear!</h2>
+        <p class="onboarding-desc">
+          Tu estudio de grabación está configurado. Disfruta de grabaciones en alta fidelidad sin límites de tiempo y con total privacidad.
+        </p>
+
+        <div class="quick-tips-box">
+          <div class="tip-line">💡 <strong>Atajo rápido:</strong> Tu pantalla principal ya está preseleccionada. Solo presiona <strong>Grabar</strong>.</div>
+          <div class="tip-line">🖊️ <strong>Lápiz neón:</strong> Dibuja durante la grabación abriendo el dock flotante.</div>
+          <div class="tip-line">🔒 <strong>Seguridad:</strong> Nada de lo que grabes se transmitirá a ningún servidor.</div>
+        </div>
+
+        <div class="onboarding-actions">
+          <button type="button" class="btn-onboarding-primary btn-xl" id="btnFinishOnboarding" style="width: 100%;">
+            <span>Empezar con Loomus Studio 🚀</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script src="app.js"></script>

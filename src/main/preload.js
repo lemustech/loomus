@@ -44,5 +44,10 @@ contextBridge.exposeInMainWorld('loomus', {
   // Window controls
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   closeWindow: () => ipcRenderer.invoke('window:close'),
-  setAlwaysOnTop: (flag) => ipcRenderer.invoke('window:always-on-top', flag)
+  setAlwaysOnTop: (flag) => ipcRenderer.invoke('window:always-on-top', flag),
+
+  // macOS Permissions & Onboarding
+  checkPermissions: () => ipcRenderer.invoke('permissions:check'),
+  requestPermission: (type) => ipcRenderer.invoke('permissions:request', type),
+  openSettings: (pane) => ipcRenderer.invoke('permissions:open-settings', pane)
 });
