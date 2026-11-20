@@ -1055,6 +1055,9 @@ function initModeSelector() {
   if (modeScreenCam) modeScreenCam.onclick = () => setMode('screencam');
   if (modeScreenOnly) modeScreenOnly.onclick = () => setMode('screen');
   if (modeCamOnly) modeCamOnly.onclick = () => setMode('cam');
+
+  // Inicializar estado visual por defecto: Solo Pantalla (cámara apagada, sin flash)
+  setMode('screen');
 }
 
 function initInkingControls() {

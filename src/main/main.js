@@ -15,7 +15,8 @@ function createMainWindow() {
     height: Math.min(780, height - 80),
     minWidth: 860,
     minHeight: 620,
-    backgroundColor: '#0f1117',
+    show: false, // Inicio suave estilo Apple: no mostrar hasta renderizar
+    backgroundColor: '#0a0c12',
     title: 'Loomus Studio',
     icon: path.join(__dirname, '../renderer/assets/logo.svg'),
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
@@ -30,6 +31,11 @@ function createMainWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+
+  // Revelación impecable sin parpadeo (Apple-grade smooth reveal)
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
