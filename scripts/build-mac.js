@@ -130,10 +130,10 @@ async function buildMacApp() {
   run(`dot_clean -m "${STAGE_APP_PATH}"`, 'Purgando archivos residuales AppleDouble');
   run(`xattr -cr "${STAGE_APP_PATH}"`, 'Eliminando atributos extendidos de Finder');
 
-  // 9. Firma de código con Entitlements de hardware
+  // 9. Firma de código con Entitlements de hardware y Bundle ID fijo
   run(
-    `codesign --force --deep --sign - --entitlements "${entitlementsPath}" "${STAGE_APP_PATH}"`,
-    'Aplicando firma ad-hoc con Entitlements'
+    `codesign --force --deep --sign - --identifier "${BUNDLE_ID}" --entitlements "${entitlementsPath}" "${STAGE_APP_PATH}"`,
+    'Aplicando firma ad-hoc con Entitlements y Bundle Identifier'
   );
 
   run(`codesign --verify --deep --strict --verbose=1 "${STAGE_APP_PATH}"`, 'Verificando firma de código');

@@ -3291,6 +3291,16 @@ async function initOnboarding() {
   const permCardScreen = document.getElementById('permCardScreen');
   const permCardMic = document.getElementById('permCardMic');
   const permCardCam = document.getElementById('permCardCam');
+  const screenPermHelper = document.getElementById('screenPermHelper');
+  const btnRelaunchApp = document.getElementById('btnRelaunchApp');
+
+  if (btnRelaunchApp) {
+    btnRelaunchApp.addEventListener('click', () => {
+      if (window.loomus?.relaunchApp) {
+        window.loomus.relaunchApp();
+      }
+    });
+  }
 
   let pollInterval = null;
 
@@ -3344,10 +3354,15 @@ async function initOnboarding() {
           btnReqScreen.textContent = '✓ Listo';
           btnReqScreen.classList.add('done');
           if (permCardScreen) permCardScreen.classList.add('granted');
+          if (screenPermHelper) screenPermHelper.classList.add('hidden');
         } else {
           badgeScreen.textContent = 'Pendiente';
           badgeScreen.className = 'macos-badge pending';
-          btnReqScreen.textContent = 'Permitir...';
+          if (screenPermHelper && !screenPermHelper.classList.contains('hidden')) {
+            btnReqScreen.textContent = 'Abrir Ajustes ↗';
+          } else {
+            btnReqScreen.textContent = 'Permitir...';
+          }
           btnReqScreen.classList.remove('done');
           if (permCardScreen) permCardScreen.classList.remove('granted');
         }
@@ -3407,6 +3422,8 @@ async function initOnboarding() {
     btnReqScreen.addEventListener('click', async () => {
       try {
         btnReqScreen.textContent = 'Abriendo...';
+        if (screenPermHelper) screenPermHelper.classList.remove('hidden');
+
         if (window.loomus?.requestPermission) {
           const res = await window.loomus.requestPermission('screen');
           if (res !== true && window.loomus?.openSettings) {
@@ -3420,7 +3437,7 @@ async function initOnboarding() {
           await window.loomus.openSettings('screen');
         }
       }
-      setTimeout(updatePermissionsStatus, 1200);
+      setTimeout(updatePermissionsStatus, 1000);
     });
   }
 

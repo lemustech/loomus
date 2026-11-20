@@ -2713,6 +2713,69 @@ html[dir="rtl"] .footer-right-actions {
   background: rgba(48, 209, 88, 0.04);
 }
 
+/* Screen Permission Helper & Restart Banner */
+.screen-perm-helper {
+  background: rgba(10, 132, 255, 0.09);
+  border-top: 1px solid rgba(10, 132, 255, 0.22);
+  border-bottom: 1px solid rgba(10, 132, 255, 0.22);
+  padding: 12px 16px;
+  animation: appleStepFade 0.2s ease-out;
+}
+
+.helper-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.helper-step-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11.5px;
+  color: rgba(235, 235, 245, 0.88);
+  line-height: 1.4;
+}
+
+.helper-step-item .step-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0a84ff;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-macos-relaunch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(180deg, #0a84ff 0%, #0071e3 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-left: auto;
+  box-shadow: 0 2px 8px rgba(10, 132, 255, 0.45);
+  transition: all 0.15s ease;
+}
+
+.btn-macos-relaunch:hover {
+  filter: brightness(1.12);
+  transform: translateY(-0.5px);
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.6);
+}
+
 .setting-icon-squircle {
   width: 36px;
   height: 36px;

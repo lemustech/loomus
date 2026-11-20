@@ -310,6 +310,12 @@ ipcMain.handle('window:always-on-top', (_event, flag) => {
   if (mainWindow) mainWindow.setAlwaysOnTop(!!flag);
 });
 
+// Relaunch app to apply macOS TCC permissions
+ipcMain.handle('app:relaunch', () => {
+  app.relaunch();
+  app.exit(0);
+});
+
 // 8. macOS Permissions & Onboarding API
 ipcMain.handle('permissions:check', async () => {
   if (process.platform !== 'darwin') {
@@ -322,6 +328,7 @@ ipcMain.handle('permissions:check', async () => {
     const cam = (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function')
       ? systemPreferences.getMediaAccessStatus('camera')
       : 'granted';
+
     let screen = 'not-determined';
     try {
       if (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function') {
@@ -330,6 +337,26 @@ ipcMain.handle('permissions:check', async () => {
     } catch (e) {
       console.warn('Error reading screen access status:', e);
     }
+
+    // Doble verificación: si getMediaAccessStatus no da 'granted', comprobar si desktopCapturer ya tiene acceso real
+    if (screen !== 'granted') {
+      try {
+        const sources = await desktopCapturer.getSources({
+          types: ['screen'],
+          thumbnailSize: { width: 40, height: 40 }
+        });
+        if (sources && sources.length > 0) {
+          const thumb = sources[0].thumbnail;
+          if (thumb && !thumb.isEmpty()) {
+            const size = thumb.getSize();
+            if (size.width > 0 && size.height > 0) {
+              screen = 'granted';
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
     return { microphone: mic, camera: cam, screen };
   } catch (err) {
     console.warn('Error in permissions:check:', err);
@@ -347,11 +374,26 @@ ipcMain.handle('permissions:request', async (_event, type) => {
       return true;
     }
     if (type === 'screen') {
+      // 1. Disparar solicitud real al WindowServer de macOS para registrar la app en Ajustes
       try {
-        await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 1, height: 1 } });
+        await desktopCapturer.getSources({
+          types: ['screen', 'window'],
+          thumbnailSize: { width: 200, height: 120 },
+          fetchWindowIcons: true
+        });
       } catch (e) {
         console.warn('Triggering screen permission prompt:', e.message);
       }
+
+      // 2. Abrir Ajustes del Sistema directamente en Privacidad > Grabación de pantalla
+      const pane = 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture';
+      try {
+        await shell.openExternal(pane);
+      } catch (_) {
+        const { exec } = require('child_process');
+        exec(`open "${pane}"`);
+      }
+
       let status = 'not-determined';
       try {
         if (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function') {
@@ -359,15 +401,6 @@ ipcMain.handle('permissions:request', async (_event, type) => {
         }
       } catch (_) {}
 
-      if (status !== 'granted') {
-        const pane = 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture';
-        try {
-          await shell.openExternal(pane);
-        } catch (_) {
-          const { exec } = require('child_process');
-          exec(`open "${pane}"`);
-        }
-      }
       return status === 'granted';
     }
   } catch (err) {
