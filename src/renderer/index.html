@@ -836,139 +836,238 @@
 
   </div>
 
-  <!-- ONBOARDING & PERMISSIONS WELCOME MODAL -->
+  <!-- ONBOARDING & PERMISSIONS WELCOME MODAL (APPLE NATIVE SHEET) -->
   <div class="onboarding-overlay" id="onboardingOverlay">
-    <div class="onboarding-modal glass-card">
+    <div class="onboarding-modal macos-window">
 
-      <!-- Step Indicator -->
-      <div class="onboarding-stepper">
-        <span class="step-dot active" id="stepDot1"></span>
-        <span class="step-line" id="stepLine1"></span>
-        <span class="step-dot" id="stepDot2"></span>
-        <span class="step-line" id="stepLine2"></span>
-        <span class="step-dot" id="stepDot3"></span>
+      <!-- macOS Window Top Bar -->
+      <div class="macos-window-header">
+        <div class="macos-traffic-lights">
+          <span class="traffic-dot close"></span>
+          <span class="traffic-dot minimize"></span>
+          <span class="traffic-dot maximize"></span>
+        </div>
+        <div class="macos-window-title">
+          <span class="apple-logo-glyph"></span>
+          <span>Loomus Studio · Asistente de Configuración</span>
+        </div>
+        <div class="macos-window-actions">
+          <button type="button" class="btn-sheet-close" id="btnCloseOnboardingSheet" title="Cerrar asistente">✕</button>
+        </div>
       </div>
 
-      <!-- STEP 1: Bienvenida & Agradecimiento -->
+      <!-- Apple Segmented Stepper -->
+      <div class="macos-segmented-stepper">
+        <button type="button" class="stepper-tab active" id="tabStep1" data-step="1">
+          <span class="tab-index">1</span>
+          <span class="tab-label">Bienvenida</span>
+        </button>
+        <button type="button" class="stepper-tab" id="tabStep2" data-step="2">
+          <span class="tab-index">2</span>
+          <span class="tab-label">Permisos macOS</span>
+        </button>
+        <button type="button" class="stepper-tab" id="tabStep3" data-step="3">
+          <span class="tab-index">3</span>
+          <span class="tab-label">Listo</span>
+        </button>
+      </div>
+
+      <!-- STEP 1: Bienvenida & Agradecimiento al Autor -->
       <div class="onboarding-step active" id="onboardingStep1">
-        <div class="onboarding-hero-icon">
-          <img src="assets/logo.svg" alt="Loomus Logo" class="onboarding-logo" />
+        <div class="apple-hero-wrap">
+          <div class="apple-app-icon-squircle">
+            <img src="assets/logo.svg" alt="Loomus Logo" class="onboarding-logo" />
+          </div>
+          <h2 class="apple-hero-title">Bienvenido a Loomus Studio</h2>
+          <div class="apple-author-badge">
+            <span>Creado por</span>
+            <a href="https://instagram.com/Llemus43" target="_blank" rel="noopener noreferrer" class="author-tag">
+              <span class="ig-icon">📸</span>
+              <strong>Luis Lemus</strong>
+              <span class="handle">@Llemus43</span>
+            </a>
+          </div>
+          <p class="apple-hero-desc">
+            Grabador de pantalla y cámara de nivel profesional para macOS. Diseñado desde cero para ser <strong>100% privado, sin suscripciones y sin enviar datos a la nube</strong>.
+          </p>
         </div>
-        <div class="badge-pill" style="margin: 0 auto 12px; display: inline-flex;">
-          <span class="badge-pulse"></span>
-          <span>¡Bienvenido a Loomus Studio!</span>
-        </div>
-        <h2 class="onboarding-title">Gracias por elegir Loomus</h2>
-        <p class="onboarding-desc">
-          Loomus Studio fue creado por <strong>Luis Lemus</strong> (<a href="https://instagram.com/Llemus43" target="_blank" rel="noopener noreferrer" style="color: var(--accent-cyan); text-decoration: none;">@Llemus43</a>) para ofrecer una alternativa <strong>100% privada, sin suscripciones y sin nube</strong> para grabar tu pantalla y cámara en macOS.
-        </p>
 
-        <div class="onboarding-highlights">
-          <div class="highlight-item">
-            <span class="highlight-icon">🔒</span>
-            <div>
-              <strong>100% Local-First</strong>
-              <p>Tus videos se quedan en tu Mac. Cero subidas a la nube.</p>
+        <div class="macos-features-grid">
+          <div class="macos-feature-card">
+            <div class="feat-icon-squircle icon-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div class="feat-content">
+              <strong>100% Privado y Local</strong>
+              <p>Tus grabaciones se procesan en tu Mac. Cero subidas a servidores.</p>
             </div>
           </div>
-          <div class="highlight-item">
-            <span class="highlight-icon">⚡</span>
-            <div>
+
+          <div class="macos-feature-card">
+            <div class="feat-icon-squircle icon-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <div class="feat-content">
               <strong>Apple Silicon Nativo</strong>
-              <p>Grabación fluida a 60 FPS con mínimo consumo de batería.</p>
+              <p>Captura fluida a 60 FPS acelerada por hardware con mínimo consumo.</p>
             </div>
           </div>
-          <div class="highlight-item">
-            <span class="highlight-icon">🖊️</span>
-            <div>
-              <strong>Dibujo y Teleprompter</strong>
-              <p>Herramientas de estudio profesionales integradas sin costo.</p>
+
+          <div class="macos-feature-card">
+            <div class="feat-icon-squircle icon-teal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <div class="feat-content">
+              <strong>Estudio Completo</strong>
+              <p>Teleprompter invisible, lápiz neón y editor de video integrado.</p>
             </div>
           </div>
         </div>
 
-        <div class="onboarding-actions">
-          <button type="button" class="btn-onboarding-primary" id="btnNextToStep2">
-            <span>Configurar Permisos →</span>
+        <div class="macos-actions-bar">
+          <button type="button" class="btn-apple-primary btn-wide" id="btnNextToStep2">
+            <span>Continuar a Permisos de macOS</span>
+            <span class="btn-chevron">→</span>
           </button>
         </div>
       </div>
 
-      <!-- STEP 2: Concesión y Activación de Permisos -->
+      <!-- STEP 2: Concesión y Activación de Permisos de macOS -->
       <div class="onboarding-step" id="onboardingStep2">
-        <div class="badge-pill" style="margin: 0 auto 10px; display: inline-flex;">
-          <span>🛡️ Privacidad y Seguridad</span>
-        </div>
-        <h2 class="onboarding-title">Activa los permisos de tu Mac</h2>
-        <p class="onboarding-desc">
-          macOS protege tu equipo exigiendo autorización explícita. Activa cada permiso con un clic para que Loomus funcione a la perfección:
-        </p>
-
-        <div class="permissions-checklist">
-          <!-- Permiso 1: Pantalla -->
-          <div class="perm-card" id="permCardScreen">
-            <div class="perm-icon-wrap">🖥️</div>
-            <div class="perm-info">
-              <div class="perm-title-row">
-                <h4>Grabación de Pantalla</h4>
-                <span class="perm-status-badge pending" id="badgeScreen">Pendiente</span>
-              </div>
-              <p>Requerido para capturar tu escritorio completo o ventanas de apps.</p>
-            </div>
-            <button type="button" class="btn-perm-action" id="btnReqScreen">Activar</button>
-          </div>
-
-          <!-- Permiso 2: Micrófono -->
-          <div class="perm-card" id="permCardMic">
-            <div class="perm-icon-wrap">🎙️</div>
-            <div class="perm-info">
-              <div class="perm-title-row">
-                <h4>Micrófono de Estudio</h4>
-                <span class="perm-status-badge pending" id="badgeMic">Pendiente</span>
-              </div>
-              <p>Captura tu narración y voz con sincronización exacta.</p>
-            </div>
-            <button type="button" class="btn-perm-action" id="btnReqMic">Activar</button>
-          </div>
-
-          <!-- Permiso 3: Cámara -->
-          <div class="perm-card" id="permCardCam">
-            <div class="perm-icon-wrap">📷</div>
-            <div class="perm-info">
-              <div class="perm-title-row">
-                <h4>Cámara Web (A demanda)</h4>
-                <span class="perm-status-badge pending" id="badgeCam">Opcional</span>
-              </div>
-              <p>Para proyectar tu burbuja flotante. Nunca se encenderá sola.</p>
-            </div>
-            <button type="button" class="btn-perm-action" id="btnReqCam">Activar</button>
-          </div>
+        <div class="apple-step-header">
+          <h2 class="apple-hero-title" style="margin-bottom: 4px;">Permisos del Sistema macOS</h2>
+          <p class="apple-hero-desc" style="max-width: 520px; margin: 0 auto 18px;">
+            macOS exige autorización explícita para capturar la pantalla y los dispositivos de entrada. Actívalos a continuación:
+          </p>
         </div>
 
-        <div class="onboarding-actions-split">
-          <button type="button" class="btn-onboarding-secondary" id="btnBackToStep1">← Volver</button>
-          <button type="button" class="btn-onboarding-primary" id="btnNextToStep3">Continuar →</button>
+        <!-- macOS Inset Grouped Settings List -->
+        <div class="macos-inset-group">
+          <!-- Item 1: Pantalla -->
+          <div class="macos-setting-row" id="permCardScreen">
+            <div class="setting-icon-squircle icon-screen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="setting-info">
+              <div class="setting-title-line">
+                <span class="setting-title">Grabación de Pantalla</span>
+                <span class="macos-badge pending" id="badgeScreen">Pendiente</span>
+              </div>
+              <span class="setting-subtitle">Permite capturar tu escritorio completo o ventanas específicas de apps.</span>
+            </div>
+            <div class="setting-action">
+              <button type="button" class="btn-macos-action" id="btnReqScreen">Permitir...</button>
+            </div>
+          </div>
+
+          <!-- Item 2: Micrófono -->
+          <div class="macos-setting-row" id="permCardMic">
+            <div class="setting-icon-squircle icon-mic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </div>
+            <div class="setting-info">
+              <div class="setting-title-line">
+                <span class="setting-title">Acceso al Micrófono</span>
+                <span class="macos-badge pending" id="badgeMic">Pendiente</span>
+              </div>
+              <span class="setting-subtitle">Captura tu narración y voz con sincronización exacta y reducción de ruido.</span>
+            </div>
+            <div class="setting-action">
+              <button type="button" class="btn-macos-action" id="btnReqMic">Permitir...</button>
+            </div>
+          </div>
+
+          <!-- Item 3: Cámara -->
+          <div class="macos-setting-row" id="permCardCam">
+            <div class="setting-icon-squircle icon-cam">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+            <div class="setting-info">
+              <div class="setting-title-line">
+                <span class="setting-title">Cámara Web (A demanda)</span>
+                <span class="macos-badge pending" id="badgeCam">Opcional</span>
+              </div>
+              <span class="setting-subtitle">Para proyectar tu burbuja de video flotante. Nunca se encenderá sola.</span>
+            </div>
+            <div class="setting-action">
+              <button type="button" class="btn-macos-action" id="btnReqCam">Permitir...</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- macOS Guidance Tip Box -->
+        <div class="macos-callout-box">
+          <span class="callout-icon">💡</span>
+          <div class="callout-body">
+            <strong>Instrucción de macOS Sequoia / Sonoma:</strong>
+            Al pulsar <em>Permitir</em> en Grabación de Pantalla, macOS abrirá <em>Ajustes del Sistema</em>. Enciende el interruptor de <strong>Loomus Studio</strong>. Cuando regreses a esta ventana, Loomus detectará el permiso automáticamente.
+          </div>
+        </div>
+
+        <div class="macos-split-actions">
+          <button type="button" class="btn-apple-secondary" id="btnBackToStep1">← Atrás</button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-apple-secondary" id="btnCheckPermissionsManual" title="Volver a verificar permisos">
+              <span>↻ Comprobar</span>
+            </button>
+            <button type="button" class="btn-apple-primary" id="btnNextToStep3">
+              <span>Continuar →</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- STEP 3: ¡Listo para Grabar! -->
       <div class="onboarding-step" id="onboardingStep3">
-        <div class="onboarding-hero-icon" style="margin-bottom: 14px;">
-          <div class="success-check-ring">✓</div>
-        </div>
-        <h2 class="onboarding-title">¡Todo listo para crear!</h2>
-        <p class="onboarding-desc">
-          Tu estudio de grabación está configurado. Disfruta de grabaciones en alta fidelidad sin límites de tiempo y con total privacidad.
-        </p>
-
-        <div class="quick-tips-box">
-          <div class="tip-line">💡 <strong>Atajo rápido:</strong> Tu pantalla principal ya está preseleccionada. Solo presiona <strong>Grabar</strong>.</div>
-          <div class="tip-line">🖊️ <strong>Lápiz neón:</strong> Dibuja durante la grabación abriendo el dock flotante.</div>
-          <div class="tip-line">🔒 <strong>Seguridad:</strong> Nada de lo que grabes se transmitirá a ningún servidor.</div>
+        <div class="apple-success-wrap">
+          <div class="apple-success-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h2 class="apple-hero-title">¡Todo Listo para tu Grabación!</h2>
+          <p class="apple-hero-desc">
+            Tu estudio de grabación en macOS está completamente configurado y optimizado para la pantalla Retina de tu Mac.
+          </p>
         </div>
 
-        <div class="onboarding-actions">
-          <button type="button" class="btn-onboarding-primary btn-xl" id="btnFinishOnboarding" style="width: 100%;">
+        <div class="macos-quick-tips">
+          <div class="quick-tip-row">
+            <span class="tip-glyph">🖥️</span>
+            <span><strong>Tu pantalla principal ya está lista:</strong> Solo presiona el botón rojo <strong>Iniciar Grabación</strong>.</span>
+          </div>
+          <div class="quick-tip-row">
+            <span class="tip-glyph">🖊️</span>
+            <span><strong>Herramientas flotantes:</strong> Usa el dock para dibujar flechas, círculos o abrir el teleprompter invisible.</span>
+          </div>
+          <div class="quick-tip-row">
+            <span class="tip-glyph">🔒</span>
+            <span><strong>Privacidad garantizada:</strong> Cada video se guarda directamente en tu Mac en formato WebM o MP4 sin marcas de agua.</span>
+          </div>
+        </div>
+
+        <div class="macos-actions-bar">
+          <button type="button" class="btn-apple-primary btn-xl" id="btnFinishOnboarding" style="width: 100%;">
             <span>Empezar con Loomus Studio 🚀</span>
           </button>
         </div>

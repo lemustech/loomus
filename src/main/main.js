@@ -191,8 +191,8 @@ ipcMain.handle('get-sources', async () => {
       display_id: s.display_id
     }));
   } catch (err) {
-    console.error('Error in get-sources:', err);
-    throw err;
+    console.warn('Warning in get-sources (posible falta de permisos de pantalla en macOS):', err.message);
+    return [];
   }
 });
 
@@ -312,28 +312,67 @@ ipcMain.handle('window:always-on-top', (_event, flag) => {
 
 // 8. macOS Permissions & Onboarding API
 ipcMain.handle('permissions:check', async () => {
-  if (process.platform !== 'darwin' || !systemPreferences.getMediaAccessStatus) {
+  if (process.platform !== 'darwin') {
     return { microphone: 'granted', camera: 'granted', screen: 'granted' };
   }
-  return {
-    microphone: systemPreferences.getMediaAccessStatus('microphone'),
-    camera: systemPreferences.getMediaAccessStatus('camera'),
-    screen: systemPreferences.getMediaAccessStatus('screen')
-  };
+  try {
+    const mic = (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function')
+      ? systemPreferences.getMediaAccessStatus('microphone')
+      : 'granted';
+    const cam = (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function')
+      ? systemPreferences.getMediaAccessStatus('camera')
+      : 'granted';
+    let screen = 'not-determined';
+    try {
+      if (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function') {
+        screen = systemPreferences.getMediaAccessStatus('screen');
+      }
+    } catch (e) {
+      console.warn('Error reading screen access status:', e);
+    }
+    return { microphone: mic, camera: cam, screen };
+  } catch (err) {
+    console.warn('Error in permissions:check:', err);
+    return { microphone: 'not-determined', camera: 'not-determined', screen: 'not-determined' };
+  }
 });
 
 ipcMain.handle('permissions:request', async (_event, type) => {
   if (process.platform !== 'darwin') return true;
   try {
     if (type === 'microphone' || type === 'camera') {
-      return await systemPreferences.askForMediaAccess(type);
+      if (systemPreferences && typeof systemPreferences.askForMediaAccess === 'function') {
+        return await systemPreferences.askForMediaAccess(type);
+      }
+      return true;
     }
     if (type === 'screen') {
-      await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 1, height: 1 } });
-      return systemPreferences.getMediaAccessStatus('screen') === 'granted';
+      try {
+        await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 1, height: 1 } });
+      } catch (e) {
+        console.warn('Triggering screen permission prompt:', e.message);
+      }
+      let status = 'not-determined';
+      try {
+        if (systemPreferences && typeof systemPreferences.getMediaAccessStatus === 'function') {
+          status = systemPreferences.getMediaAccessStatus('screen');
+        }
+      } catch (_) {}
+
+      if (status !== 'granted') {
+        const pane = 'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture';
+        try {
+          await shell.openExternal(pane);
+        } catch (_) {
+          const { exec } = require('child_process');
+          exec(`open "${pane}"`);
+        }
+      }
+      return status === 'granted';
     }
   } catch (err) {
     console.warn(`Error requesting ${type} permission:`, err);
+    return false;
   }
   return false;
 });
@@ -346,5 +385,15 @@ ipcMain.handle('permissions:open-settings', async (_event, pane) => {
     camera: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Camera'
   };
   const target = panes[pane] || 'x-apple.systempreferences:com.apple.preference.security';
-  shell.openExternal(target);
+  try {
+    await shell.openExternal(target);
+  } catch (err) {
+    console.warn('shell.openExternal failed, using fallback open command:', err);
+    try {
+      const { exec } = require('child_process');
+      exec(`open "${target}"`);
+    } catch (cmdErr) {
+      console.error('Fallback open command failed:', cmdErr);
+    }
+  }
 });

@@ -1399,7 +1399,20 @@ function renderSourcesList() {
   });
 
   if (filtered.length === 0) {
-    sourcesGrid.innerHTML = `<p style="color:#64748b;font-size:12px;padding:20px;grid-column:1/-1;text-align:center;">No se encontraron ${isScreenTab ? 'pantallas' : 'ventanas'}</p>`;
+    sourcesGrid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 26px 16px;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(10, 132, 255, 0.15); color: #0a84ff; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <p style="color: #ffffff; font-weight: 600; font-size: 13px; margin: 0 0 5px;">Se requiere permiso de Grabación de Pantalla</p>
+        <p style="color: rgba(235, 235, 245, 0.6); font-size: 11.5px; max-width: 380px; margin: 0 auto 12px; line-height: 1.4;">macOS requiere tu autorización en Ajustes del Sistema para poder capturar la pantalla y ventanas.</p>
+        <button type="button" class="btn-apple-secondary" id="btnRequestScreenPermissionFromGrid" style="font-size: 11.5px; padding: 6px 14px;">Abrir Ajustes del Sistema...</button>
+      </div>
+    `;
+    const btnReq = document.getElementById('btnRequestScreenPermissionFromGrid');
+    if (btnReq) {
+      btnReq.onclick = () => window.loomus?.openSettings?.('screen');
+    }
     return;
   }
 
@@ -3245,7 +3258,7 @@ async function exportEditedVideo() {
 }
 
 // ========================
-// 8.5 ONBOARDING & PERMISSIONS CONTROLLER
+// 8.5 ONBOARDING & PERMISSIONS CONTROLLER (APPLE NATIVE SHEET)
 // ========================
 function initOnboarding() {
   const onboardingOverlay = document.getElementById('onboardingOverlay');
@@ -3256,17 +3269,16 @@ function initOnboarding() {
   const step2 = document.getElementById('onboardingStep2');
   const step3 = document.getElementById('onboardingStep3');
 
-  const dot1 = document.getElementById('stepDot1');
-  const dot2 = document.getElementById('stepDot2');
-  const dot3 = document.getElementById('stepDot3');
-
-  const line1 = document.getElementById('stepLine1');
-  const line2 = document.getElementById('stepLine2');
+  const tab1 = document.getElementById('tabStep1');
+  const tab2 = document.getElementById('tabStep2');
+  const tab3 = document.getElementById('tabStep3');
 
   const btnNextToStep2 = document.getElementById('btnNextToStep2');
   const btnBackToStep1 = document.getElementById('btnBackToStep1');
   const btnNextToStep3 = document.getElementById('btnNextToStep3');
   const btnFinishOnboarding = document.getElementById('btnFinishOnboarding');
+  const btnCloseOnboardingSheet = document.getElementById('btnCloseOnboardingSheet');
+  const btnCheckPermissionsManual = document.getElementById('btnCheckPermissionsManual');
 
   const btnReqScreen = document.getElementById('btnReqScreen');
   const btnReqMic = document.getElementById('btnReqMic');
@@ -3280,36 +3292,44 @@ function initOnboarding() {
   const permCardMic = document.getElementById('permCardMic');
   const permCardCam = document.getElementById('permCardCam');
 
+  let pollInterval = null;
+
   function goToStep(stepNum) {
     if (step1) step1.classList.remove('active');
     if (step2) step2.classList.remove('active');
     if (step3) step3.classList.remove('active');
 
-    if (dot1) dot1.className = 'step-dot';
-    if (dot2) dot2.className = 'step-dot';
-    if (dot3) dot3.className = 'step-dot';
+    if (tab1) tab1.className = 'stepper-tab';
+    if (tab2) tab2.className = 'stepper-tab';
+    if (tab3) tab3.className = 'stepper-tab';
 
-    if (line1) line1.className = 'step-line';
-    if (line2) line2.className = 'step-line';
+    if (pollInterval) {
+      clearInterval(pollInterval);
+      pollInterval = null;
+    }
 
     if (stepNum === 1) {
       if (step1) step1.classList.add('active');
-      if (dot1) dot1.classList.add('active');
+      if (tab1) tab1.classList.add('active');
     } else if (stepNum === 2) {
       if (step2) step2.classList.add('active');
-      if (dot1) dot1.classList.add('completed');
-      if (line1) line1.classList.add('active');
-      if (dot2) dot2.classList.add('active');
+      if (tab1) tab1.classList.add('completed');
+      if (tab2) tab2.classList.add('active');
       updatePermissionsStatus();
+      // Polling suave en segundo plano mientras está en la pantalla de permisos
+      pollInterval = setInterval(updatePermissionsStatus, 1400);
     } else if (stepNum === 3) {
       if (step3) step3.classList.add('active');
-      if (dot1) dot1.classList.add('completed');
-      if (line1) line1.classList.add('active');
-      if (dot2) dot2.classList.add('completed');
-      if (line2) line2.classList.add('active');
-      if (dot3) dot3.classList.add('active');
+      if (tab1) tab1.classList.add('completed');
+      if (tab2) tab2.classList.add('completed');
+      if (tab3) tab3.classList.add('active');
     }
   }
+
+  // Permite hacer clic en las pestañas del stepper para navegar
+  if (tab1) tab1.addEventListener('click', () => goToStep(1));
+  if (tab2) tab2.addEventListener('click', () => goToStep(2));
+  if (tab3) tab3.addEventListener('click', () => goToStep(3));
 
   async function updatePermissionsStatus() {
     try {
@@ -3319,15 +3339,15 @@ function initOnboarding() {
       // Screen Recording
       if (badgeScreen && btnReqScreen) {
         if (status.screen === 'granted') {
-          badgeScreen.textContent = '✓ Concedido';
-          badgeScreen.className = 'perm-status-badge granted';
+          badgeScreen.textContent = '✓ Permitido';
+          badgeScreen.className = 'macos-badge granted';
           btnReqScreen.textContent = '✓ Listo';
           btnReqScreen.classList.add('done');
           if (permCardScreen) permCardScreen.classList.add('granted');
         } else {
           badgeScreen.textContent = 'Pendiente';
-          badgeScreen.className = 'perm-status-badge pending';
-          btnReqScreen.textContent = 'Activar';
+          badgeScreen.className = 'macos-badge pending';
+          btnReqScreen.textContent = 'Permitir...';
           btnReqScreen.classList.remove('done');
           if (permCardScreen) permCardScreen.classList.remove('granted');
         }
@@ -3336,15 +3356,15 @@ function initOnboarding() {
       // Microphone
       if (badgeMic && btnReqMic) {
         if (status.microphone === 'granted') {
-          badgeMic.textContent = '✓ Concedido';
-          badgeMic.className = 'perm-status-badge granted';
+          badgeMic.textContent = '✓ Permitido';
+          badgeMic.className = 'macos-badge granted';
           btnReqMic.textContent = '✓ Listo';
           btnReqMic.classList.add('done');
           if (permCardMic) permCardMic.classList.add('granted');
         } else {
           badgeMic.textContent = 'Pendiente';
-          badgeMic.className = 'perm-status-badge pending';
-          btnReqMic.textContent = 'Activar';
+          badgeMic.className = 'macos-badge pending';
+          btnReqMic.textContent = 'Permitir...';
           btnReqMic.classList.remove('done');
           if (permCardMic) permCardMic.classList.remove('granted');
         }
@@ -3353,15 +3373,15 @@ function initOnboarding() {
       // Camera
       if (badgeCam && btnReqCam) {
         if (status.camera === 'granted') {
-          badgeCam.textContent = '✓ Concedido';
-          badgeCam.className = 'perm-status-badge granted';
+          badgeCam.textContent = '✓ Permitido';
+          badgeCam.className = 'macos-badge granted';
           btnReqCam.textContent = '✓ Listo';
           btnReqCam.classList.add('done');
           if (permCardCam) permCardCam.classList.add('granted');
         } else {
           badgeCam.textContent = 'Opcional';
-          badgeCam.className = 'perm-status-badge pending';
-          btnReqCam.textContent = 'Activar';
+          badgeCam.className = 'macos-badge pending';
+          btnReqCam.textContent = 'Permitir...';
           btnReqCam.classList.remove('done');
           if (permCardCam) permCardCam.classList.remove('granted');
         }
@@ -3371,27 +3391,40 @@ function initOnboarding() {
     }
   }
 
-  // Action: Screen Permission
+  // Botón manual de re-verificación
+  if (btnCheckPermissionsManual) {
+    btnCheckPermissionsManual.addEventListener('click', async () => {
+      btnCheckPermissionsManual.textContent = 'Comprobando...';
+      await updatePermissionsStatus();
+      setTimeout(() => {
+        btnCheckPermissionsManual.textContent = '↻ Comprobar';
+      }, 600);
+    });
+  }
+
+  // Acción: Permiso de Pantalla
   if (btnReqScreen) {
     btnReqScreen.addEventListener('click', async () => {
       try {
         btnReqScreen.textContent = 'Abriendo...';
         if (window.loomus?.requestPermission) {
           const res = await window.loomus.requestPermission('screen');
-          if (res !== 'granted' && window.loomus?.openSettings) {
+          if (res !== true && window.loomus?.openSettings) {
             await window.loomus.openSettings('screen');
           }
+        } else if (window.loomus?.openSettings) {
+          await window.loomus.openSettings('screen');
         }
       } catch {
         if (window.loomus?.openSettings) {
           await window.loomus.openSettings('screen');
         }
       }
-      setTimeout(updatePermissionsStatus, 1000);
+      setTimeout(updatePermissionsStatus, 1200);
     });
   }
 
-  // Action: Microphone Permission
+  // Acción: Permiso de Micrófono
   if (btnReqMic) {
     btnReqMic.addEventListener('click', async () => {
       try {
@@ -3414,7 +3447,7 @@ function initOnboarding() {
     });
   }
 
-  // Action: Camera Permission
+  // Acción: Permiso de Cámara
   if (btnReqCam) {
     btnReqCam.addEventListener('click', async () => {
       try {
@@ -3437,7 +3470,7 @@ function initOnboarding() {
     });
   }
 
-  // Step transitions
+  // Transiciones de pasos
   if (btnNextToStep2) {
     btnNextToStep2.addEventListener('click', () => goToStep(2));
   }
@@ -3448,17 +3481,32 @@ function initOnboarding() {
     btnNextToStep3.addEventListener('click', () => goToStep(3));
   }
 
-  // Finish onboarding
+  // Botón de cierre en barra de ventana macOS
+  if (btnCloseOnboardingSheet) {
+    btnCloseOnboardingSheet.addEventListener('click', () => {
+      try {
+        localStorage.setItem('loomus_onboarding_completed', 'true');
+      } catch (_) {}
+      if (pollInterval) clearInterval(pollInterval);
+      onboardingOverlay.classList.add('hidden');
+      if (!state.screenStream) loadSources();
+    });
+  }
+
+  // Finalizar onboarding y empezar a grabar
   if (btnFinishOnboarding) {
     btnFinishOnboarding.addEventListener('click', () => {
       try {
         localStorage.setItem('loomus_onboarding_completed', 'true');
       } catch (_) {}
+      if (pollInterval) clearInterval(pollInterval);
       onboardingOverlay.classList.add('hidden');
+      // Recargar fuentes automáticamente
+      loadSources();
     });
   }
 
-  // Re-open button from header
+  // Botón de reabrir desde la barra superior
   if (btnReopenWelcome) {
     btnReopenWelcome.addEventListener('click', () => {
       onboardingOverlay.classList.remove('hidden');
@@ -3466,7 +3514,7 @@ function initOnboarding() {
     });
   }
 
-  // Check state on load
+  // Verificar estado al arrancar
   try {
     const isCompleted = localStorage.getItem('loomus_onboarding_completed');
     if (isCompleted === 'true') {
@@ -3480,7 +3528,7 @@ function initOnboarding() {
     goToStep(1);
   }
 
-  // Re-check permissions automatically whenever window regains focus (e.g. returning from macOS System Settings)
+  // Re-verificar automáticamente cuando la ventana recupera el foco de macOS
   window.addEventListener('focus', () => {
     if (step2 && step2.classList.contains('active')) {
       updatePermissionsStatus();
