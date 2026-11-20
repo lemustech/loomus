@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,11 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body>
   <div class="app-shell">
 
@@ -68,23 +72,23 @@
         <div class="recording-mode-selector">
           <button type="button" class="mode-btn active" id="modeScreenOnly" data-mode="screen">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-              <line x1="8" y1="21" x2="16" y2="21"/>
-              <line x1="12" y1="17" x2="12" y2="21"/>
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
             </svg>
             <span>Solo Pantalla</span>
           </button>
           <button type="button" class="mode-btn" id="modeScreenCam" data-mode="screencam">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-              <circle cx="18" cy="18" r="4"/>
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+              <circle cx="18" cy="18" r="4" />
             </svg>
             <span>Pantalla + Cámara</span>
           </button>
           <button type="button" class="mode-btn" id="modeCamOnly" data-mode="cam">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 7l-7 5 7 5V7z"/>
-              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              <path d="M23 7l-7 5 7 5V7z" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
             </svg>
             <span>Solo Cámara</span>
           </button>
@@ -214,7 +218,8 @@
                     <input type="checkbox" id="clickRippleToggle" checked>
                     <span>Ondas de clic en pantalla (Click Ripple)</span>
                   </label>
-                  <button class="btn-bubble-toggle" id="btnToggleFloatingBubble" data-i18n="btnShowBubble">Ver burbuja flotante</button>
+                  <button class="btn-bubble-toggle" id="btnToggleFloatingBubble" data-i18n="btnShowBubble">Ver burbuja
+                    flotante</button>
                 </div>
               </div>
             </div>
@@ -262,7 +267,8 @@
             <div class="device-box" id="teleprompterBox">
               <div class="device-box-header">
                 <div class="device-info">
-                  <div class="device-icon" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 16px; display: flex; align-items: center; justify-content: center;">
+                  <div class="device-icon"
+                    style="background: rgba(168, 85, 247, 0.15); color: #c084fc; font-size: 16px; display: flex; align-items: center; justify-content: center;">
                     📜
                   </div>
                   <div>
@@ -270,7 +276,8 @@
                     <p data-i18n="teleprompterDesc">Visible para ti, oculto en el video grabado</p>
                   </div>
                 </div>
-                <button type="button" class="btn-bubble-toggle" id="btnOpenTeleprompter" data-i18n="btnOpenTeleprompter">Abrir Teleprompter</button>
+                <button type="button" class="btn-bubble-toggle" id="btnOpenTeleprompter"
+                  data-i18n="btnOpenTeleprompter">Abrir Teleprompter</button>
               </div>
             </div>
 
@@ -293,10 +300,10 @@
             <!-- Hidden elements for capture compositing -->
             <video id="screenVideo" autoplay playsinline muted class="hidden-source"></video>
             <video id="camVideo" autoplay playsinline muted class="hidden-source"></video>
-            
+
             <!-- Compositor Canvas -->
             <canvas id="compositorCanvas"></canvas>
-            
+
             <!-- Live Drawing & Annotation Overlay Canvas -->
             <canvas id="annotationCanvas" class="annotation-canvas"></canvas>
 
@@ -372,34 +379,36 @@
       <div class="annotation-tool-group">
         <button type="button" class="tool-btn active" data-tool="pen" title="Lápiz libre continuo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
           </svg>
         </button>
-        <button type="button" class="tool-btn" data-tool="vanishing" title="Tinta Efímera (se desvanece sola en 2.5s) ✨">
+        <button type="button" class="tool-btn" data-tool="vanishing"
+          title="Tinta Efímera (se desvanece sola en 2.5s) ✨">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
         </button>
         <button type="button" class="tool-btn" data-tool="highlighter" title="Resaltador Translúcido">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18.375 2.625a3.875 3.875 0 0 0-5.48 0L3.125 12.395l-1.12 6.72 6.72-1.12 9.77-9.77a3.875 3.875 0 0 0 0-5.48z"/>
+            <path
+              d="M18.375 2.625a3.875 3.875 0 0 0-5.48 0L3.125 12.395l-1.12 6.72 6.72-1.12 9.77-9.77a3.875 3.875 0 0 0 0-5.48z" />
           </svg>
         </button>
         <button type="button" class="tool-btn" data-tool="arrow" title="Flecha Inteligente">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
           </svg>
         </button>
         <button type="button" class="tool-btn" data-tool="rect" title="Marco de Enfoque Rectangular">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <rect x="3" y="3" width="18" height="18" rx="2" />
           </svg>
         </button>
         <button type="button" class="tool-btn" data-tool="spotlight" title="Cursor Spotlight / Linterna de Enfoque">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="9"/>
-            <circle cx="12" cy="12" r="3"/>
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="12" r="3" />
           </svg>
         </button>
       </div>
@@ -408,11 +417,16 @@
 
       <!-- Color Palette -->
       <div class="annotation-colors">
-        <button type="button" class="color-dot active" data-color="#00f0ff" style="background: #00f0ff;" title="Cian Neón"></button>
-        <button type="button" class="color-dot" data-color="#f43f5e" style="background: #f43f5e;" title="Fucsia Neón"></button>
-        <button type="button" class="color-dot" data-color="#fde047" style="background: #fde047;" title="Amarillo Fluorescente"></button>
-        <button type="button" class="color-dot" data-color="#22c55e" style="background: #22c55e;" title="Verde Lima"></button>
-        <button type="button" class="color-dot" data-color="#ffffff" style="background: #ffffff;" title="Blanco Puro"></button>
+        <button type="button" class="color-dot active" data-color="#00f0ff" style="background: #00f0ff;"
+          title="Cian Neón"></button>
+        <button type="button" class="color-dot" data-color="#f43f5e" style="background: #f43f5e;"
+          title="Fucsia Neón"></button>
+        <button type="button" class="color-dot" data-color="#fde047" style="background: #fde047;"
+          title="Amarillo Fluorescente"></button>
+        <button type="button" class="color-dot" data-color="#22c55e" style="background: #22c55e;"
+          title="Verde Lima"></button>
+        <button type="button" class="color-dot" data-color="#ffffff" style="background: #ffffff;"
+          title="Blanco Puro"></button>
       </div>
 
       <div class="annotation-divider"></div>
@@ -421,14 +435,14 @@
       <div class="annotation-actions">
         <button type="button" class="tool-action-btn" id="btnUndoAnnotation" title="Deshacer último trazo (Cmd+Z)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 7v6h6"/>
-            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+            <path d="M3 7v6h6" />
+            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
           </svg>
         </button>
         <button type="button" class="tool-action-btn" id="btnClearAnnotation" title="Limpiar todos los trazos">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
           </svg>
         </button>
       </div>
@@ -460,7 +474,8 @@
             </div>
             <div class="editor-title-wrap">
               <span class="editor-tag" data-i18n="editorBadge">Loomus Studio Editor</span>
-              <input type="text" id="editorVideoTitle" value="Loomus_Grabacion" class="editor-title-input" placeholder="Nombre de la grabación..." />
+              <input type="text" id="editorVideoTitle" value="Loomus_Grabacion" class="editor-title-input"
+                placeholder="Nombre de la grabación..." />
             </div>
           </div>
           <div class="editor-header-meta">
@@ -472,7 +487,7 @@
 
         <!-- Editor Body (2 columns: Stage on left, Tool panel on right) -->
         <div class="editor-workspace">
-          
+
           <!-- Column 1: Interactive Canvas & Timeline Player -->
           <div class="editor-stage-col">
             <!-- Stage Viewport (with live CSS effects: background, padding, shadow, border radius) -->
@@ -495,7 +510,7 @@
                   </div>
 
                   <video id="reviewVideo" playsinline preload="auto"></video>
-                  
+
                   <!-- Animated Intro Card Overlay -->
                   <div class="editor-intro-card" id="editorIntroOverlay">
                     <div class="intro-avatar" id="introAvatarIcon">🚀</div>
@@ -522,7 +537,8 @@
               <!-- Play/Pause & Time -->
               <div class="player-top-row">
                 <div class="player-left-controls">
-                  <button type="button" class="btn-play-pause" id="btnEditorPlayPause" title="Reproducir / Pausar (Espacio)">
+                  <button type="button" class="btn-play-pause" id="btnEditorPlayPause"
+                    title="Reproducir / Pausar (Espacio)">
                     <svg class="play-icon" id="playIconSvg" viewBox="0 0 24 24" fill="currentColor">
                       <polygon points="5 3 19 12 5 21 5 3" />
                     </svg>
@@ -538,9 +554,12 @@
 
                 <!-- Quick Trim Helpers -->
                 <div class="trim-readout-group">
-                  <button type="button" class="btn-trim-chip" id="btnSetTrimIn" title="Fijar cabezal actual como Inicio">📍 In: <span id="trimInLabel">00:00.0</span></button>
-                  <button type="button" class="btn-trim-chip" id="btnSetTrimOut" title="Fijar cabezal actual como Fin">📍 Out: <span id="trimOutLabel">00:00.0</span></button>
-                  <button type="button" class="btn-trim-reset" id="btnResetTrim" title="Restablecer recorte completo">↺ Reset</button>
+                  <button type="button" class="btn-trim-chip" id="btnSetTrimIn"
+                    title="Fijar cabezal actual como Inicio">📍 In: <span id="trimInLabel">00:00.0</span></button>
+                  <button type="button" class="btn-trim-chip" id="btnSetTrimOut"
+                    title="Fijar cabezal actual como Fin">📍 Out: <span id="trimOutLabel">00:00.0</span></button>
+                  <button type="button" class="btn-trim-reset" id="btnResetTrim" title="Restablecer recorte completo">↺
+                    Reset</button>
                 </div>
 
                 <!-- Playback Speed -->
@@ -580,7 +599,8 @@
           <div class="editor-tools-col">
             <!-- Tabs -->
             <div class="editor-tabs-bar">
-              <button type="button" class="tab-pill-btn active" data-tab="canvas" data-i18n="tabCanvas">🎨 Fondo</button>
+              <button type="button" class="tab-pill-btn active" data-tab="canvas" data-i18n="tabCanvas">🎨
+                Fondo</button>
               <button type="button" class="tab-pill-btn" data-tab="effects" data-i18n="tabEffects">✨ Efectos</button>
               <button type="button" class="tab-pill-btn" data-tab="intro" data-i18n="tabIntro">🏷️ Intro</button>
             </div>
@@ -591,16 +611,26 @@
               <div class="control-section">
                 <label class="control-label" data-i18n="bgThemeLabel">Fondo del Lienzo (Gradientes Studio)</label>
                 <div class="bg-swatches-grid">
-                  <button type="button" class="bg-swatch" data-bg="sequoia" title="Apple Sequoia Forest" style="background: linear-gradient(135deg, #064e3b 0%, #047857 35%, #059669 70%, #d97706 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="sonoma" title="Apple Sonoma Sunset" style="background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 40%, #c084fc 80%, #6366f1 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="keynote" title="Apple Keynote Iridescent" style="background: radial-gradient(at 0% 0%, #3b82f6 0px, transparent 55%), radial-gradient(at 100% 100%, #ec4899 0px, transparent 50%), #030712"></button>
-                  <button type="button" class="bg-swatch active" data-bg="sunset" title="Sunset Vibes" style="background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="cyber" title="Cyber Neon" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #9333ea 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="aurora" title="Emerald Aurora" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="rosegold" title="Rose Gold" style="background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #fda4af 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="obsidian" title="Obsidian Titanium" style="background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #09090b 100%)"></button>
-                  <button type="button" class="bg-swatch" data-bg="mesh" title="Mesh Studio" style="background: radial-gradient(at 0% 0%, #7c3aed 0px, transparent 50%), radial-gradient(at 100% 100%, #db2777 0px, transparent 50%), #0f172a"></button>
-                  <button type="button" class="bg-swatch" data-bg="none" title="Sin Fondo (Transparente)" style="background: repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 50% / 12px 12px"></button>
+                  <button type="button" class="bg-swatch" data-bg="sequoia" title="Apple Sequoia Forest"
+                    style="background: linear-gradient(135deg, #064e3b 0%, #047857 35%, #059669 70%, #d97706 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="sonoma" title="Apple Sonoma Sunset"
+                    style="background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 40%, #c084fc 80%, #6366f1 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="keynote" title="Apple Keynote Iridescent"
+                    style="background: radial-gradient(at 0% 0%, #3b82f6 0px, transparent 55%), radial-gradient(at 100% 100%, #ec4899 0px, transparent 50%), #030712"></button>
+                  <button type="button" class="bg-swatch active" data-bg="sunset" title="Sunset Vibes"
+                    style="background: linear-gradient(135deg, #f97316 0%, #ec4899 50%, #8b5cf6 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="cyber" title="Cyber Neon"
+                    style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #9333ea 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="aurora" title="Emerald Aurora"
+                    style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="rosegold" title="Rose Gold"
+                    style="background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #fda4af 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="obsidian" title="Obsidian Titanium"
+                    style="background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #09090b 100%)"></button>
+                  <button type="button" class="bg-swatch" data-bg="mesh" title="Mesh Studio"
+                    style="background: radial-gradient(at 0% 0%, #7c3aed 0px, transparent 50%), radial-gradient(at 100% 100%, #db2777 0px, transparent 50%), #0f172a"></button>
+                  <button type="button" class="bg-swatch" data-bg="none" title="Sin Fondo (Transparente)"
+                    style="background: repeating-conic-gradient(#333 0% 25%, #222 0% 50%) 50% / 12px 12px"></button>
                 </div>
               </div>
 
@@ -610,9 +640,9 @@
                 <div class="custom-bg-actions">
                   <button type="button" class="btn-custom-bg" id="btnUploadBg">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21 15 16 10 5 21"/>
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
                     </svg>
                     <span data-i18n="uploadBgBtn">Subir Fondo Propio</span>
                   </button>
@@ -667,10 +697,14 @@
               <div class="control-section">
                 <label class="control-label" data-i18n="deviceFrameLabel">Marco Apple / Mockup</label>
                 <div class="chips-group" id="frameChips">
-                  <button type="button" class="chip-option active" data-frame="none" data-i18n="frameNose">Sin Marco</button>
-                  <button type="button" class="chip-option" data-frame="macbook" data-i18n="frameMacbook">MacBook Pro</button>
-                  <button type="button" class="chip-option" data-frame="window" data-i18n="frameWindow">Ventana macOS</button>
-                  <button type="button" class="chip-option" data-frame="glass" data-i18n="frameGlass">Vidrio Studio</button>
+                  <button type="button" class="chip-option active" data-frame="none" data-i18n="frameNose">Sin
+                    Marco</button>
+                  <button type="button" class="chip-option" data-frame="macbook" data-i18n="frameMacbook">MacBook
+                    Pro</button>
+                  <button type="button" class="chip-option" data-frame="window" data-i18n="frameWindow">Ventana
+                    macOS</button>
+                  <button type="button" class="chip-option" data-frame="glass" data-i18n="frameGlass">Vidrio
+                    Studio</button>
                 </div>
               </div>
 
@@ -678,10 +712,14 @@
               <div class="control-section">
                 <label class="control-label" data-i18n="tiltLabel">Inclinación 3D (Keynote Style)</label>
                 <div class="chips-group" id="tiltChips">
-                  <button type="button" class="chip-option active" data-tilt="flat" data-i18n="tiltNone">Plano 0°</button>
-                  <button type="button" class="chip-option" data-tilt="tilt-left" data-i18n="tiltLeft">Giro Izq -6°</button>
-                  <button type="button" class="chip-option" data-tilt="tilt-right" data-i18n="tiltRight">Giro Der +6°</button>
-                  <button type="button" class="chip-option" data-tilt="isometric" data-i18n="tiltIso">Isométrico 3D</button>
+                  <button type="button" class="chip-option active" data-tilt="flat" data-i18n="tiltNone">Plano
+                    0°</button>
+                  <button type="button" class="chip-option" data-tilt="tilt-left" data-i18n="tiltLeft">Giro Izq
+                    -6°</button>
+                  <button type="button" class="chip-option" data-tilt="tilt-right" data-i18n="tiltRight">Giro Der
+                    +6°</button>
+                  <button type="button" class="chip-option" data-tilt="isometric" data-i18n="tiltIso">Isométrico
+                    3D</button>
                 </div>
               </div>
 
@@ -765,12 +803,14 @@
               <div id="introCardConfig">
                 <div class="control-section">
                   <label class="control-label" data-i18n="introDemoTitleLabel">Título de la Demostración</label>
-                  <input type="text" id="inputIntroTitle" value="Demostración Rápida" class="studio-input" placeholder="Título del video..." />
+                  <input type="text" id="inputIntroTitle" value="Demostración Rápida" class="studio-input"
+                    placeholder="Título del video..." />
                 </div>
 
                 <div class="control-section">
                   <label class="control-label" data-i18n="introDemoSubtitleLabel">Subtítulo o Autor</label>
-                  <input type="text" id="inputIntroSubtitle" value="Por Luis Lemus · Loomus" class="studio-input" placeholder="Tu nombre o empresa..." />
+                  <input type="text" id="inputIntroSubtitle" value="Por Luis Lemus · Loomus" class="studio-input"
+                    placeholder="Tu nombre o empresa..." />
                 </div>
 
                 <div class="control-section">
@@ -812,14 +852,16 @@
 
         <!-- Footer Actions -->
         <div class="modal-footer editor-footer">
-          <button type="button" class="btn-secondary" id="btnDiscardRecording" data-i18n="btnDiscard">Descartar Toma</button>
+          <button type="button" class="btn-secondary" id="btnDiscardRecording" data-i18n="btnDiscard">Descartar
+            Toma</button>
           <div class="footer-right-actions">
             <button type="button" class="btn-outline-studio" id="btnSaveRawVideo" title="Guardar sin efectos directo">
               <span data-i18n="btnSaveRaw">Guardar Original</span>
             </button>
             <button type="button" class="btn-primary btn-export-magic" id="btnExportEditedVideo">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="btn-icon-svg">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
               <span data-i18n="btnExportMagic">Exportar con Lumos Maxima</span>
             </button>
@@ -888,7 +930,8 @@
             </a>
           </div>
           <p class="apple-hero-desc">
-            Grabador de pantalla y cámara de nivel profesional para macOS. Diseñado desde cero para ser <strong>100% privado, sin suscripciones y sin enviar datos a la nube</strong>.
+            Grabador de pantalla y cámara de nivel profesional para macOS. Diseñado desde cero para ser <strong>100%
+              privado, sin suscripciones y sin enviar datos a la nube</strong>.
           </p>
         </div>
 
@@ -896,8 +939,8 @@
           <div class="macos-feature-card">
             <div class="feat-icon-squircle icon-blue">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </div>
             <div class="feat-content">
@@ -909,7 +952,7 @@
           <div class="macos-feature-card">
             <div class="feat-icon-squircle icon-purple">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
             </div>
             <div class="feat-content">
@@ -921,8 +964,8 @@
           <div class="macos-feature-card">
             <div class="feat-icon-squircle icon-teal">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 20h9"/>
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
               </svg>
             </div>
             <div class="feat-content">
@@ -945,7 +988,8 @@
         <div class="apple-step-header">
           <h2 class="apple-hero-title" style="margin-bottom: 4px;">Permisos del Sistema macOS</h2>
           <p class="apple-hero-desc" style="max-width: 520px; margin: 0 auto 18px;">
-            macOS exige autorización explícita para capturar la pantalla y los dispositivos de entrada. Actívalos a continuación:
+            macOS exige autorización explícita para capturar la pantalla y los dispositivos de entrada. Actívalos a
+            continuación:
           </p>
         </div>
 
@@ -955,9 +999,9 @@
           <div class="macos-setting-row" id="permCardScreen">
             <div class="setting-icon-squircle icon-screen">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                <line x1="8" y1="21" x2="16" y2="21"/>
-                <line x1="12" y1="17" x2="12" y2="21"/>
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
               </svg>
             </div>
             <div class="setting-info">
@@ -965,7 +1009,8 @@
                 <span class="setting-title">Grabación de Pantalla</span>
                 <span class="macos-badge pending" id="badgeScreen">Pendiente</span>
               </div>
-              <span class="setting-subtitle">Permite capturar tu escritorio completo o ventanas específicas de apps.</span>
+              <span class="setting-subtitle">Permite capturar tu escritorio completo o ventanas específicas de
+                apps.</span>
             </div>
             <div class="setting-action">
               <button type="button" class="btn-macos-action" id="btnReqScreen">Permitir...</button>
@@ -976,10 +1021,10 @@
           <div class="macos-setting-row" id="permCardMic">
             <div class="setting-icon-squircle icon-mic">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
               </svg>
             </div>
             <div class="setting-info">
@@ -987,7 +1032,8 @@
                 <span class="setting-title">Acceso al Micrófono</span>
                 <span class="macos-badge pending" id="badgeMic">Pendiente</span>
               </div>
-              <span class="setting-subtitle">Captura tu narración y voz con sincronización exacta y reducción de ruido.</span>
+              <span class="setting-subtitle">Captura tu narración y voz con sincronización exacta y reducción de
+                ruido.</span>
             </div>
             <div class="setting-action">
               <button type="button" class="btn-macos-action" id="btnReqMic">Permitir...</button>
@@ -998,8 +1044,8 @@
           <div class="macos-setting-row" id="permCardCam">
             <div class="setting-icon-squircle icon-cam">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
               </svg>
             </div>
             <div class="setting-info">
@@ -1007,7 +1053,8 @@
                 <span class="setting-title">Cámara Web (A demanda)</span>
                 <span class="macos-badge pending" id="badgeCam">Opcional</span>
               </div>
-              <span class="setting-subtitle">Para proyectar tu burbuja de video flotante. Nunca se encenderá sola.</span>
+              <span class="setting-subtitle">Para proyectar tu burbuja de video flotante. Nunca se encenderá
+                sola.</span>
             </div>
             <div class="setting-action">
               <button type="button" class="btn-macos-action" id="btnReqCam">Permitir...</button>
@@ -1020,14 +1067,17 @@
           <span class="callout-icon">💡</span>
           <div class="callout-body">
             <strong>Instrucción de macOS Sequoia / Sonoma:</strong>
-            Al pulsar <em>Permitir</em> en Grabación de Pantalla, macOS abrirá <em>Ajustes del Sistema</em>. Enciende el interruptor de <strong>Loomus Studio</strong>. Cuando regreses a esta ventana, Loomus detectará el permiso automáticamente.
+            Al pulsar <em>Permitir</em> en Grabación de Pantalla, macOS abrirá <em>Ajustes del Sistema</em>. Enciende el
+            interruptor de <strong>Loomus Studio</strong>. Cuando regreses a esta ventana, Loomus detectará el permiso
+            automáticamente.
           </div>
         </div>
 
         <div class="macos-split-actions">
           <button type="button" class="btn-apple-secondary" id="btnBackToStep1">← Atrás</button>
           <div style="display: flex; gap: 8px;">
-            <button type="button" class="btn-apple-secondary" id="btnCheckPermissionsManual" title="Volver a verificar permisos">
+            <button type="button" class="btn-apple-secondary" id="btnCheckPermissionsManual"
+              title="Volver a verificar permisos">
               <span>↻ Comprobar</span>
             </button>
             <button type="button" class="btn-apple-primary" id="btnNextToStep3">
@@ -1042,27 +1092,31 @@
         <div class="apple-success-wrap">
           <div class="apple-success-ring">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-              <polyline points="20 6 9 17 4 12"/>
+              <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
           <h2 class="apple-hero-title">¡Todo Listo para tu Grabación!</h2>
           <p class="apple-hero-desc">
-            Tu estudio de grabación en macOS está completamente configurado y optimizado para la pantalla Retina de tu Mac.
+            Tu estudio de grabación en macOS está completamente configurado y optimizado para la pantalla Retina de tu
+            Mac.
           </p>
         </div>
 
         <div class="macos-quick-tips">
           <div class="quick-tip-row">
             <span class="tip-glyph">🖥️</span>
-            <span><strong>Tu pantalla principal ya está lista:</strong> Solo presiona el botón rojo <strong>Iniciar Grabación</strong>.</span>
+            <span><strong>Tu pantalla principal ya está lista:</strong> Solo presiona el botón rojo <strong>Iniciar
+                Grabación</strong>.</span>
           </div>
           <div class="quick-tip-row">
             <span class="tip-glyph">🖊️</span>
-            <span><strong>Herramientas flotantes:</strong> Usa el dock para dibujar flechas, círculos o abrir el teleprompter invisible.</span>
+            <span><strong>Herramientas flotantes:</strong> Usa el dock para dibujar flechas, círculos o abrir el
+              teleprompter invisible.</span>
           </div>
           <div class="quick-tip-row">
             <span class="tip-glyph">🔒</span>
-            <span><strong>Privacidad garantizada:</strong> Cada video se guarda directamente en tu Mac en formato WebM o MP4 sin marcas de agua.</span>
+            <span><strong>Privacidad garantizada:</strong> Cada video se guarda directamente en tu Mac en formato WebM o
+              MP4 sin marcas de agua.</span>
           </div>
         </div>
 
@@ -1078,4 +1132,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -3260,7 +3260,7 @@ async function exportEditedVideo() {
 // ========================
 // 8.5 ONBOARDING & PERMISSIONS CONTROLLER (APPLE NATIVE SHEET)
 // ========================
-function initOnboarding() {
+async function initOnboarding() {
   const onboardingOverlay = document.getElementById('onboardingOverlay');
   const btnReopenWelcome = document.getElementById('btnReopenWelcome');
   if (!onboardingOverlay) return;
@@ -3316,8 +3316,8 @@ function initOnboarding() {
       if (tab1) tab1.classList.add('completed');
       if (tab2) tab2.classList.add('active');
       updatePermissionsStatus();
-      // Polling suave en segundo plano mientras está en la pantalla de permisos
-      pollInterval = setInterval(updatePermissionsStatus, 1400);
+      // Polling suave cada 1200ms mientras esté en la pantalla de permisos
+      pollInterval = setInterval(updatePermissionsStatus, 1200);
     } else if (stepNum === 3) {
       if (step3) step3.classList.add('active');
       if (tab1) tab1.classList.add('completed');
@@ -3326,7 +3326,7 @@ function initOnboarding() {
     }
   }
 
-  // Permite hacer clic en las pestañas del stepper para navegar
+  // Navegación por pestañas del stepper estilo Apple
   if (tab1) tab1.addEventListener('click', () => goToStep(1));
   if (tab2) tab2.addEventListener('click', () => goToStep(2));
   if (tab3) tab3.addEventListener('click', () => goToStep(3));
@@ -3481,27 +3481,29 @@ function initOnboarding() {
     btnNextToStep3.addEventListener('click', () => goToStep(3));
   }
 
-  // Botón de cierre en barra de ventana macOS
+  // Botón de cierre en barra de ventana macOS (✕)
   if (btnCloseOnboardingSheet) {
     btnCloseOnboardingSheet.addEventListener('click', () => {
-      try {
-        localStorage.setItem('loomus_onboarding_completed', 'true');
-      } catch (_) {}
-      if (pollInterval) clearInterval(pollInterval);
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
       onboardingOverlay.classList.add('hidden');
       if (!state.screenStream) loadSources();
     });
   }
 
-  // Finalizar onboarding y empezar a grabar
+  // Finalizar onboarding y empezar a grabar (Solo aquí se guarda la finalización definitiva)
   if (btnFinishOnboarding) {
     btnFinishOnboarding.addEventListener('click', () => {
       try {
-        localStorage.setItem('loomus_onboarding_completed', 'true');
+        localStorage.setItem('loomus_welcome_v1_1_completed', 'true');
       } catch (_) {}
-      if (pollInterval) clearInterval(pollInterval);
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
       onboardingOverlay.classList.add('hidden');
-      // Recargar fuentes automáticamente
       loadSources();
     });
   }
@@ -3514,18 +3516,31 @@ function initOnboarding() {
     });
   }
 
-  // Verificar estado al arrancar
+  // Limpiar clave obsoleta que causaba cierre automático
   try {
-    const isCompleted = localStorage.getItem('loomus_onboarding_completed');
-    if (isCompleted === 'true') {
-      onboardingOverlay.classList.add('hidden');
-    } else {
-      onboardingOverlay.classList.remove('hidden');
-      goToStep(1);
+    localStorage.removeItem('loomus_onboarding_completed');
+  } catch (_) {}
+
+  // Verificar estado de permisos y bienvenida de forma determinista
+  let perms = null;
+  try {
+    if (window.loomus?.checkPermissions) {
+      perms = await window.loomus.checkPermissions();
     }
-  } catch (_) {
+  } catch (e) {
+    console.warn('Initial permissions check warning:', e);
+  }
+
+  const isCompleted = localStorage.getItem('loomus_welcome_v1_1_completed') === 'true';
+  const isScreenGranted = perms?.screen === 'granted';
+
+  // Solo se oculta automáticamente si ya completó el asistente Y además los permisos están concedidos.
+  if (isCompleted && isScreenGranted) {
+    onboardingOverlay.classList.add('hidden');
+  } else {
+    // Si no ha completado la bienvenida o falta el permiso de pantalla, PERMANECE ABIERTA
     onboardingOverlay.classList.remove('hidden');
-    goToStep(1);
+    goToStep(isCompleted && !isScreenGranted ? 2 : 1);
   }
 
   // Re-verificar automáticamente cuando la ventana recupera el foco de macOS
@@ -3546,10 +3561,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.body.classList.add('is-mac');
   }
   await initLocale();
-  await enumerateDevices();
-  await loadSources();
   initEditorUI();
   initInkingControls();
   initModeSelector();
-  initOnboarding();
+  await initOnboarding();
+  await enumerateDevices();
+  await loadSources();
 });
