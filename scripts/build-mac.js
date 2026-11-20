@@ -126,17 +126,42 @@ async function buildMacApp() {
     // ignorar si no existe
   }
 
-  // 8. Limpiar archivos ._ y atributos extendidos antes de la firma
+  // 8. Limpiar archivos ._ y atributos extendidos antes de la firma (purga total multinivel)
   run(`dot_clean -m "${STAGE_APP_PATH}"`, 'Purgando archivos residuales AppleDouble');
-  run(`xattr -cr "${STAGE_APP_PATH}"`, 'Eliminando atributos extendidos de Finder');
+  run(`find "${STAGE_APP_PATH}" -exec xattr -c {} + 2>/dev/null || true`, 'Limpiando exhaustivamente todos los atributos extendidos (xattrs)');
+  run(`xattr -cr "${STAGE_APP_PATH}"`, 'Eliminando atributos extendidos de Finder en la raíz');
 
-  // 9. Firma de código con Entitlements de hardware y Bundle ID fijo
+  // 9. Firma de código adentro hacia afuera (Inside-Out Signing) con Entitlements y Bundle ID fijo
+  console.log('✍️ Firmando frameworks y componentes internos (Inside-Out)...');
+  const frameworksDir = path.join(STAGE_APP_PATH, 'Contents', 'Frameworks');
+  if (fs.existsSync(frameworksDir)) {
+    const fwItems = fs.readdirSync(frameworksDir);
+    // Firmar primero dylibs y frameworks
+    for (const item of fwItems) {
+      const fullItem = path.join(frameworksDir, item);
+      if (item.endsWith('.framework') || item.endsWith('.dylib')) {
+        run(`codesign --force --sign - "${fullItem}"`, `Firmando framework interno: ${item}`);
+      }
+    }
+    // Firmar aplicaciones auxiliares (Electron Helper, etc.)
+    for (const item of fwItems) {
+      const fullItem = path.join(frameworksDir, item);
+      if (item.endsWith('.app')) {
+        run(
+          `codesign --force --sign - --entitlements "${entitlementsPath}" "${fullItem}"`,
+          `Firmando helper interno: ${item}`
+        );
+      }
+    }
+  }
+
+  // Firmar el bundle principal de la aplicación
   run(
-    `codesign --force --deep --sign - --identifier "${BUNDLE_ID}" --entitlements "${entitlementsPath}" "${STAGE_APP_PATH}"`,
-    'Aplicando firma ad-hoc con Entitlements y Bundle Identifier'
+    `codesign --force --sign - --identifier "${BUNDLE_ID}" --entitlements "${entitlementsPath}" "${STAGE_APP_PATH}"`,
+    'Aplicando firma ad-hoc al bundle principal con Entitlements y Bundle Identifier'
   );
 
-  run(`codesign --verify --deep --strict --verbose=1 "${STAGE_APP_PATH}"`, 'Verificando firma de código');
+  run(`codesign --verify --deep --strict --verbose=1 "${STAGE_APP_PATH}"`, 'Verificando firma de código estricta de macOS');
 
   // 10. Generar DMG instalador con diseño personalizado
   console.log('\n📦 Empaquetando instalador DMG con diseño de Loomus...');
